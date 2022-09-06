@@ -1,0 +1,55 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "teku.fullname" . }}-pre-delete-hook
+  labels:
+{{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
+    aadpodidbinding: "{{ .Values.azure.identityName }}"
+{{- end }}
+    app.kubernetes.io/name: {{ include "teku.fullname" . }}-pre-install-hook
+    app.kubernetes.io/instance: {{ .Release.Name }}  
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/hook: pre-delete
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: "hook-succeeded"
+spec:
+  backoffLimit: 3
+  completions: 1
+  template:
+    metadata:
+      labels:
+{{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
+        aadpodidbinding: "{{ .Values.azure.identityName }}"
+{{- end}}      
+        app.kubernetes.io/name: {{ include "teku.fullname" . }}-pre-install-hook
+        app.kubernetes.io/instance: {{ .Release.Name }} 
+    spec:
+{{- if and (eq .Values.cluster.provider "aws") (.Values.cluster.cloudNativeServices) }}
+      serviceAccountName: {{ .Values.aws.serviceAccountName }}
+{{- else }}
+      serviceAccountName: {{ include "teku.fullname" . }}-hooks-sa
+{{- end }}    
+      restartPolicy: "OnFailure"
+      containers:
+        - name: {{ template "teku.fullname" . }}-node-pre-delete-hook
+          image: "{{ .Values.image.hooks.repository }}:{{ .Values.image.hooks.tag }}"
+          imagePullPolicy: {{ .Values.image.hooks.pullPolicy }}
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - |
+
+              function deleteSecret {
+                key=$1
+                kubectl delete secret ${key} --namespace {{ .Release.Namespace }} 
+              }
+
+              echo "{{ template "teku.fullname" . }} pre-delete hook ..."
+{{- if .Values.tekuFlags.removeKeysOnDelete -}}
+              deleteSecret {{ template "teku.fullname" . }}-keys
+{{- end }}       
+              echo "{{ template "teku.fullname" . }} pre-delete hook completed..."
+
