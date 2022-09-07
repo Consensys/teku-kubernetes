@@ -2,49 +2,42 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "teku.fullname" . }}
+  name: {{ include "teku.fullname" . }}-internal
   labels:
-    app: {{ template "teku.fullname" . }}
-    chart: {{ template "teku.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    namespace: {{ .Release.Namespace }}
-    app.kubernetes.io/name: {{ include "teku.fullname" . }}
-    helm.sh/chart: {{ include "teku.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: {{ .Release.Name }}
+    app.kubernetes.io/name: internal
+    app.kubernetes.io/component: service
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/release: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
   namespace: {{ .Release.Namespace }}
 spec:
   type: ClusterIP
   selector:
-    app: {{ template "teku.fullname" . }}
-    release: {{ .Release.Name }}
-    component: {{ .Release.Name }}
-    app.kubernetes.io/name: {{ include "teku.fullname" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/release: {{ .Release.Name }}
   ports:
     - name: elc-rpc
-      port: {{ .Values.node.besu.rpc.port }}
+      port: {{ .Values.node.elc.rpc.port }}
       targetPort: elc-rpc
       protocol: TCP
     - name: elc-engine
-      port: {{ .Values.node.besu.engine.port }}
+      port: {{ .Values.node.elc.engine.port }}
       targetPort: elc-ws
       protocol: TCP
     - name: elc-rlpx
-      port: {{ .Values.node.besu.p2p.port }}
+      port: {{ .Values.node.elc.p2p.port }}
       targetPort: elc-rlpx
       protocol: TCP
     - name: elc-discovery
-      port: {{ .Values.node.besu.p2p.port }}
+      port: {{ .Values.node.elc.p2p.port }}
       targetPort: elc-discovery
       protocol: UDP
     - name: elc-metrics
-      port: {{ .Values.node.besu.metrics.port }}
+      port: {{ .Values.node.elc.metrics.port }}
       targetPort: elc-metrics
       protocol: TCP
-
     - name: libp2p
       port: {{ .Values.node.teku.p2p.port }}
       targetPort: libp2p
@@ -61,7 +54,6 @@ spec:
       port: {{ .Values.node.teku.metrics.port }}
       targetPort: metrics
       protocol: TCP      
-    
 
 {{- if .Values.node.metrics.serviceMonitorEnabled }}
 ---
@@ -71,16 +63,10 @@ metadata:
   name: {{ include "teku.fullname" . }}-servicemonitor
   labels:
     release: monitoring
-    helm.sh/chart: {{ include "teku.chart" . }}
-    app: {{ template "teku.fullname" . }}
-    chart: {{ template "teku.chart" . }}
-    heritage: {{ .Release.Service }}
-    namespace: {{ .Release.Namespace }}
     app.kubernetes.io/name: {{ include "teku.fullname" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/component: {{ .Release.Name }}
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ template "teku.chart" . }}
+    app.kubernetes.io/release: monitoring
   namespace: {{ .Release.Namespace }}
 spec:
   namespaceSelector:
@@ -88,9 +74,9 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "teku.fullname" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "teku.fullname" . }}
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
   endpoints:
   - port: metrics
     interval: 15s

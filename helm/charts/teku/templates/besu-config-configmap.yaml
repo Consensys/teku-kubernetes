@@ -1,18 +1,17 @@
-{{- if eq .Values.node.elc.cient "besu" }}
+{{- if eq .Values.node.elc.client "besu" }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "teku.fullname" . }}-besu-config
   labels:
-    app: {{ template "teku.name" . }}
-    chart: {{ template "teku.chart" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: besu-config
+    app.kubernetes.io/component: besu
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ template "teku.chart" . }}
+    app.kubernetes.io/release: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
     heritage: {{ .Release.Service }}
-    namespace: {{ .Release.Namespace }}
-    app.kubernetes.io/name: {{ include "teku.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
     helm.sh/chart: {{ include "teku.chart" . }}
   namespace: {{ .Release.Namespace }}
 data:
@@ -26,73 +25,43 @@ data:
 
     # Node Information
     network={{ .Values.node.network }}
-    data-path={{ .Values.node.besu.dataPath | quote }}
-    logging={{ .Values.node.besu.logging | quote }}
-    engine-host-allowlist={{ .Values.node.besu.engine.hostAllowlist }}
-    engine-rpc-port={{ .Values.node.besu.engine.rpcPort }}
-    engine-jwt-secret={{ .Values.node.besu.engine.jwtSecretPath | quote }}
-    Xmerge-support={{ .Values.node.besu.engine.xMmergeSupport }}
+    data-path={{ .Values.node.elc.dataPath | quote }}
+    logging={{ .Values.node.elc.logging | quote }}
+    engine-host-allowlist={{ .Values.node.elc.engine.hostAllowlist }}
+    engine-rpc-port={{ .Values.node.elc.engine.port }}
+    engine-jwt-secret={{ .Values.node.elc.engine.jwtSecretPath | quote }}
+    Xmerge-support={{ .Values.node.elc.engine.xMmergeSupport }}
 
-    # Transaction Pool
-    tx-pool-retention-hours={{ .Values.node.besu.txPool.retentionHours }}
-    tx-pool-max-size={{ .Values.node.besu.txPool.maxSize }}
-
-    {{ if  .Values.node.besu.p2p.enabled -}}
+    {{ if  .Values.node.elc.p2p.enabled -}}
     # P2P network
-    p2p-enabled={{ .Values.node.besu.p2p.enabled }}
-    discovery-enabled={{ .Values.node.besu.p2p.discovery }}
-    static-nodes-file={{ .Values.node.besu.p2p.staticNodes | quote }}
-    p2p-host={{ .Values.node.besu.p2p.host | quote }}
-    p2p-port={{ .Values.node.besu.p2p.port }}
-    max-peers={{ .Values.node.besu.p2p.maxPeers }}
+    p2p-enabled={{ .Values.node.elc.p2p.enabled }}
+    discovery-enabled={{ .Values.node.elc.p2p.discovery }}
+    static-nodes-file={{ .Values.node.elc.p2p.staticNodes | quote }}
+    p2p-host={{ .Values.node.elc.p2p.host | quote }}
+    p2p-port={{ .Values.node.elc.p2p.port }}
+    max-peers={{ .Values.node.elc.p2p.maxPeers }}
     {{ end }}
 
-    {{ if or .Values.node.besu.rpc.enabled .Values.node.besu.graphql.enabled .Values.node.besu.ws.enabled }}
-    host-allowlist={{ .Values.node.besu.http.allowlist }}
+    {{ if or .Values.node.elc.rpc.enabled }}
+    host-allowlist={{ .Values.node.elc.http.allowlist }}
     {{ end }}
 
-    {{ if  .Values.node.besu.rpc.enabled -}}
+    {{ if  .Values.node.elc.rpc.enabled -}}
     # JSON-RPC
-    rpc-http-enabled={{ .Values.node.besu.rpc.enabled }}
-    rpc-http-host={{ .Values.node.besu.rpc.host | quote }}
-    rpc-http-port={{ .Values.node.besu.rpc.port }}
-    rpc-http-api={{ .Values.node.besu.rpc.api }}
-    rpc-http-cors-origins={{ .Values.node.besu.rpc.corsOrigins }}
-    rpc-http-authentication-enabled={{ .Values.node.besu.rpc.authenticationEnabled }}
+    rpc-http-enabled={{ .Values.node.elc.rpc.enabled }}
+    rpc-http-host={{ .Values.node.elc.rpc.host | quote }}
+    rpc-http-port={{ .Values.node.elc.rpc.port }}
+    rpc-http-api={{ .Values.node.elc.rpc.api }}
+    rpc-http-cors-origins={{ .Values.node.elc.rpc.corsOrigins }}
+    rpc-http-authentication-enabled={{ .Values.node.elc.rpc.authenticationEnabled }}
     revert-reason-enabled=true
     {{ end }}
 
-    {{ if  .Values.node.besu.graphql.enabled -}}
-    # GRAPHQL-RPC
-    graphql-http-enabled={{ .Values.node.besu.graphql.enabled }}
-    graphql-http-host={{ .Values.node.besu.graphql.host | quote }}
-    graphql-http-port={{ .Values.node.besu.graphql.port }}
-    graphql-http-cors-origins={{ .Values.node.besu.graphql.corsOrigins }}
-    {{ end }}
-
-    {{ if  .Values.node.besu.ws.enabled -}}
-    # WebSockets API
-    rpc-ws-enabled={{ .Values.node.besu.ws.enabled }}
-    rpc-ws-host={{ .Values.node.besu.ws.host | quote }}
-    rpc-ws-port={{ .Values.node.besu.ws.port }}
-    rpc-ws-api={{ .Values.node.besu.ws.api }}
-    rpc-ws-authentication-enabled={{ .Values.node.besu.ws.authenticationEnabled }}
-    {{ end }}
-
-    {{ if  .Values.node.besu.metrics.enabled -}}
+    {{ if  .Values.node.elc.metrics.enabled -}}
     # Metrics
-    metrics-enabled={{ .Values.node.besu.metrics.enabled }}
-    metrics-host={{ .Values.node.besu.metrics.host | quote }}
-    metrics-port={{ .Values.node.besu.metrics.port }}
-    {{ end }}
-
-    {{ if  .Values.node.besu.metricsPush.enabled -}}
-    # Metrics Push
-    metrics-push-enabled={{ .Values.node.besu.metricsPush.enabled }}
-    metrics-push-host={{ .Values.node.besu.metricsPush.host | quote }}
-    metrics-push-port={{ .Values.node.besu.metricsPush.port }}
-    metrics-push-interval={{ .Values.node.besu.metricsPush.interval }}
-    metrics-push-prometheus-job={{ .Values.node.besu.metricsPush.prometheusJob | quote }}
+    metrics-enabled={{ .Values.node.elc.metrics.enabled }}
+    metrics-host={{ .Values.node.elc.metrics.host | quote }}
+    metrics-port={{ .Values.node.elc.metrics.port }}
     {{ end }}
 
 {{- end }}

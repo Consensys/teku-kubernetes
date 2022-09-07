@@ -8,16 +8,12 @@ metadata:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
     aadpodidbinding: "{{ .Values.azure.identityName }}"
 {{- end }}
-    app: {{ template "teku.fullname" . }}-besu
-    chart: {{ template "teku.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    namespace: {{ .Release.Namespace }}
-    component: {{ .Release.Name }}-besu
-    helm.sh/chart: {{ include "teku.chart" . }}
-    app.kubernetes.io/name: {{ include "teku.fullname" . }}-besu
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: besu-statefulset
+    app.kubernetes.io/component: besu
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/release: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
@@ -26,12 +22,13 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ template "teku.fullname" . }}-besu
-      release: {{ .Release.Name }}
-      component: {{ .Release.Name }}-besu
-      app.kubernetes.io/name: {{ include "teku.fullname" . }}-besu
-      app.kubernetes.io/instance: {{ .Release.Name }}
-  serviceName: {{ include "teku.fullname" . }}
+      app.kubernetes.io/name: besu-statefulset
+      app.kubernetes.io/component: besu
+      app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+      app.kubernetes.io/namespace: {{ .Release.Namespace }}
+      app.kubernetes.io/release: {{ .Release.Name }}
+      app.kubernetes.io/managed-by: helm
+  serviceName: {{ include "teku.fullname" . }}-service-internal
   volumeClaimTemplates:
   - metadata:
       name: data
@@ -47,14 +44,15 @@ spec:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}        
         aadpodidbinding: "{{ .Values.azure.identityName }}"
 {{- end }}
-        app: {{ template "teku.fullname" . }}-besu
-        release: {{ .Release.Name }}
-        component: {{ .Release.Name }}-besu
-        app.kubernetes.io/name: {{ include "teku.fullname" . }}-besu
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: besu-statefulset
+        app.kubernetes.io/component: besu
+        app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+        app.kubernetes.io/namespace: {{ .Release.Namespace }}
+        app.kubernetes.io/release: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: helm
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: {{ .Values.node.besu.metrics.port | quote}}
+        prometheus.io/port: {{ .Values.node.elc.metrics.port | quote}}
         prometheus.io/path: "/metrics"
     spec:
 {{- if and (eq .Values.cluster.provider "aws") (.Values.cluster.cloudNativeServices) }}
@@ -77,17 +75,16 @@ spec:
 {{- end}}
 
       containers:
-     
       - name: {{ .Release.Name }}-besu
         image: {{ .Values.image.besu.repository }}:{{ .Values.image.besu.tag }}
         imagePullPolicy: {{ .Values.image.besu.pullPolicy }}
         resources:
           requests:
-            cpu: "{{ .Values.node.besu.resources.cpuRequest }}"
-            memory: "{{ .Values.node.besu.resources.memRequest }}"
+            cpu: "{{ .Values.node.elc.resources.cpuRequest }}"
+            memory: "{{ .Values.node.elc.resources.memRequest }}"
           limits:
-            cpu: "{{ .Values.node.besu.resources.cpuLimit }}"
-            memory: "{{ .Values.node.besu.resources.memLimit }}"
+            cpu: "{{ .Values.node.elc.resources.cpuLimit }}"
+            memory: "{{ .Values.node.elc.resources.memLimit }}"
         env:
           - name: POD_IP
             valueFrom:
@@ -97,7 +94,7 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-{{- if .Values.node.besu.envBesuOpts }}
+{{- if .Values.node.elc.besu.envBesuOpts }}
           - name: BESU_OPTS
             value: "{{ .Values.node.besu.envBesuOpts }}"
 {{- end }}    
@@ -105,26 +102,26 @@ spec:
           - name: besu-config
             mountPath: /etc/besu
             readOnly: true
-          - name: {{ template "teku.fullname" . }}-keys
-            mountPath: {{ .Values.node.besu.keysPath }}
+          - name: keys
+            mountPath: {{ .Values.node.elc.keysPath }}
             readOnly: true            
           - name: data
-            mountPath: {{ .Values.node.besu.dataPath }}
+            mountPath: {{ .Values.node.elc.dataPath }}
         ports:
           - name: elc-rpc
-            containerPort: {{ .Values.node.besu.rpc.port }}
+            containerPort: {{ .Values.node.elc.rpc.port }}
             protocol: TCP
           - name: elc-engine
-            containerPort: {{ .Values.node.besu.engine.port }}
+            containerPort: {{ .Values.node.elc.engine.port }}
             protocol: TCP
           - name: elc-rlpx
-            containerPort: {{ .Values.node.besu.p2p.port }}
+            containerPort: {{ .Values.node.elc.p2p.port }}
             protocol: TCP
           - name: elc-discovery
-            containerPort: {{ .Values.node.besu.p2p.port }}
+            containerPort: {{ .Values.node.elc.p2p.port }}
             protocol: UDP
           - name: elc-metrics
-            containerPort: {{ .Values.node.besu.metrics.port }}
+            containerPort: {{ .Values.node.elc.metrics.port }}
             protocol: TCP
                       
         command:
@@ -135,7 +132,7 @@ spec:
             exec
             /opt/besu/bin/besu \
               --config-file=/etc/besu/config.toml \
-              --Xdns-enabled=true --Xdns-update-enabled=true --Xnat-kube-service-name={{ include "teku.fullname" . }}
+              --Xdns-enabled=true --Xdns-update-enabled=true --Xnat-kube-service-name={{ include "teku.fullname" . }}-discovery
 
         livenessProbe:
           httpGet:
@@ -147,5 +144,8 @@ spec:
       - name: besu-config
         configMap:
           name: {{ include "teku.fullname" . }}-besu-config
+      - name: keys
+        secret:
+          secretName: {{ include "teku.fullname" . }}-keys
 
 {{- end }}

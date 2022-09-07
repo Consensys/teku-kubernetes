@@ -11,10 +11,48 @@ cluster:
 node:
   network: mainnet
   removeKeysOnDelete: true
-  elc:
-    client: besu
   metrics:
     serviceMonitorEnabled: false
+  elc:
+    client: besu
+    resources:
+      cpuLimit: 0.7
+      cpuRequest: 0.5
+      memLimit: "2G"
+      memRequest: "1G"
+    dataPath: "/data"
+    keysPath: "/keys"
+    logging: INFO
+    engine:
+      hostAllowlist: '["*"]'
+      port: 8551
+      jwtSecretPath: "/keys/jwtSharedSecret.hex"
+      xMmergeSupport: true
+    p2p:
+      enabled: true
+      host: "0.0.0.0"
+      port: 30303
+      discovery: true
+      maxPeers: 25
+    rpc:
+      enabled: true
+      host: "0.0.0.0"
+      port: 8545
+      api: '["DEBUG","ETH", "ADMIN", "WEB3", "NET", "TRACE", "TXPOOL"]'
+      corsOrigins: '["all"]'
+      authenticationEnabled: false
+    http:
+      allowlist: '["*"]'
+    metrics:
+      enabled: true
+      host: "0.0.0.0"
+      port: 9545
+      # enable if using prometheus-stack metrics monitoring
+      serviceMonitorEnabled: false      
+    besu:
+      envBesuOpts: ""
+    geth:
+      verbosity: 3
   teku:
     network: mainnet
     resources:
@@ -22,7 +60,7 @@ node:
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
-    dataPath: "/data/teku"     
+    dataPath: "/data"     
     keysPath: "/keys"
     logging: INFO
     p2p:
@@ -47,49 +85,8 @@ node:
       enabled: false
       host: "5.5.5.5"
       interval: 15
-  besu:
-    envBesuOpts: ""
-    resources:
-      cpuLimit: 0.7
-      cpuRequest: 0.5
-      memLimit: "2G"
-      memRequest: "1G"
-    dataPath: "/data/besu"
-    keysPath: "/keys"
-    logging: INFO
-    engine:
-      hostAllowlist: '["*"]'
-      rpcPort: 8551
-      jwtSecretPath: "/keys/jwtsecret.hex"
-      xMmergeSupport: true
-    p2p:
-      enabled: true
-      host: "0.0.0.0"
-      port: 30303
-      discovery: true
-      maxPeers: 25
-    rpc:
-      enabled: true
-      host: "0.0.0.0"
-      port: 8545
-      api: '["DEBUG","ETH", "ADMIN", "WEB3", "NET", "TRACE", "TXPOOL"]'
-      corsOrigins: '["all"]'
-      authenticationEnabled: false
-    http:
-      allowlist: '["*"]'
-    metrics:
-      enabled: true
-      host: "0.0.0.0"
-      port: 9545
-      # enable if using prometheus-stack metrics monitoring
-      serviceMonitorEnabled: false      
-    metricsPush:
-      enabled: false
-      host: "5.5.5.5"
-      port: 9091
-      interval: 15
-      # TODO: what is this again? add comments here
-      prometheusJob: "besu"
+
+
     
 aws:
   # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name

@@ -34,11 +34,9 @@ node:
       memRequest: "1G"
   elc:
     client: besu
-  besu:
-    envBesuOpts: ""  
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
-    dataPath: "/data/besu"      
+    dataPath: "/data"      

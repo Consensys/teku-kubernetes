@@ -89,7 +89,7 @@ per your requirements and policies
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 # NOTE: please refer to values/monitoring.yml to configure the alerts per your requirements ie slack, email etc
-helm install monitoring prometheus-community/kube-prometheus-stack --version 34.10.0 --namespace=quorum --create-namespace --values ./values/monitoring.yml --wait
+helm install monitoring prometheus-community/kube-prometheus-stack --version 39.10.0 --namespace=teku --create-namespace --values ./values/monitoring.yml --wait
 kubectl --namespace teku apply -f  ./values/monitoring/
 ```
 

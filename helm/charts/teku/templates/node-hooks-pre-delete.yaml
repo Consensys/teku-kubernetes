@@ -7,8 +7,12 @@ metadata:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
     aadpodidbinding: "{{ .Values.azure.identityName }}"
 {{- end }}
-    app.kubernetes.io/name: {{ include "teku.fullname" . }}-pre-install-hook
-    app.kubernetes.io/instance: {{ .Release.Name }}  
+    app.kubernetes.io/name: pre-delete-hook
+    app.kubernetes.io/component: job
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/release: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
   namespace: {{ .Release.Namespace }}
   annotations:
     helm.sh/hook: pre-delete
@@ -44,7 +48,7 @@ spec:
 
               function deleteSecret {
                 key=$1
-                kubectl delete secret ${key} --namespace {{ .Release.Namespace }} 
+                kubectl delete secret ${key} --namespace {{ .Release.Namespace }}
               }
 
               echo "{{ template "teku.fullname" . }} pre-delete hook ..."
