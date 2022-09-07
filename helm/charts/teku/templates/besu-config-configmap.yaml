@@ -1,4 +1,4 @@
-{{- if eq .Values.tekuFlags.elClient "besu" }}
+{{- if eq .Values.node.elc.cient "besu" }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -25,7 +25,7 @@ data:
     # All other config options are strings, and must be quoted.
 
     # Node Information
-    network={{ .Values.node.besu.network }}
+    network={{ .Values.node.network }}
     data-path={{ .Values.node.besu.dataPath | quote }}
     logging={{ .Values.node.besu.logging | quote }}
     engine-host-allowlist={{ .Values.node.besu.engine.hostAllowlist }}

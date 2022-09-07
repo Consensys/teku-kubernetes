@@ -1,0 +1,44 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "teku.fullname" . }}-discovery
+  labels:
+    app: {{ template "teku.fullname" . }}
+    chart: {{ template "teku.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/name: {{ include "teku.fullname" . }}
+    helm.sh/chart: {{ include "teku.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/component: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: LoadBalancer
+  selector:
+    app: {{ template "teku.fullname" . }}
+    release: {{ .Release.Name }}
+    component: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ include "teku.fullname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: elc-rlpx
+      port: {{ .Values.node.besu.p2p.port }}
+      targetPort: elc-rlpx
+      protocol: TCP
+    - name: elc-discovery
+      port: {{ .Values.node.besu.p2p.port }}
+      targetPort: elc-discovery
+      protocol: UDP
+
+    - name: libp2p
+      port: {{ .Values.node.teku.p2p.port }}
+      targetPort: libp2p
+      protocol: TCP      
+    - name: discovery
+      port: {{ .Values.node.teku.p2p.port }}
+      targetPort: discovery
+      protocol: UDP
+    

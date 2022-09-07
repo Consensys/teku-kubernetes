@@ -48,7 +48,7 @@ spec:
               }
 
               echo "{{ template "teku.fullname" . }} pre-delete hook ..."
-{{- if .Values.tekuFlags.removeKeysOnDelete -}}
+{{- if .Values.node.removeKeysOnDelete -}}
               deleteSecret {{ template "teku.fullname" . }}-keys
 {{- end }}       
               echo "{{ template "teku.fullname" . }} pre-delete hook completed..."

@@ -6,7 +6,7 @@ metadata:
   name: {{ include "teku.fullname" . }}-storage
   namespace: {{ .Release.Namespace }}
 provisioner: kubernetes.io/azure-file
-reclaimPolicy: {{ .Values.cluster.reclaimPolicy }}
+reclaimPolicy: {{ .Values.cluster.storage.reclaimPolicy }}
 allowVolumeExpansion: true
 mountOptions:
   - dir_mode=0755
@@ -25,7 +25,7 @@ metadata:
   name: {{ include "teku.fullname" . }}-storage
   namespace: {{ .Release.Namespace }}
 provisioner: ebs.csi.aws.com
-reclaimPolicy: {{ .Values.cluster.reclaimPolicy }}
+reclaimPolicy: {{ .Values.cluster.storage.reclaimPolicy }}
 allowVolumeExpansion: true
 parameters:
   type: gp3
@@ -38,7 +38,7 @@ parameters:
 #   name: {{ include "teku.fullname" . }}-storage
 #   namespace: {{ .Release.Namespace }}
 # provisioner: efs.csi.aws.com
-# reclaimPolicy: Retain
+# reclaimPolicy: {{ .Values.cluster.storage.reclaimPolicy }}
 # parameters:
 #   provisioningMode: efs-ap
 #   fileSystemId: #your_file_system_id
@@ -58,10 +58,10 @@ metadata:
   labels:
     type: local
 spec:
-  persistentVolumeReclaimPolicy: {{ .Values.cluster.reclaimPolicy }}
+  persistentVolumeReclaimPolicy: {{ .Values.cluster.storage.reclaimPolicy }}
   storageClassName: {{ include "teku.fullname" . }}-storage
   capacity:
-    storage: "{{ .Values.storage.sizeLimit }}"
+    storage: "{{ .Values.cluster.storage.sizeLimit }}"
   accessModes:
     - ReadWriteOnce
   hostPath:

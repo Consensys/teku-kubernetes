@@ -1,14 +1,12 @@
 ---
-
-tekuFlags:
-  elClient: besu
-  removeKeysOnDelete: true
-
 cluster:
   provider: local  # choose from: local | aws | azure
   cloudNativeServices: false 
-  reclaimPolicy: Delete # set to either Retain or Delete; note that PVCs and PVs will still exist after a 'helm delete'. Setting to Retain will keep volumes even if PVCs/PVs are deleted in kubernetes. Setting to Delete will remove volumes from EC2 EBS when PVC is deleted
-
+  storage:
+    sizeLimit: "20Gi"
+    pvcSizeLimit: "20Gi"
+    # NOTE: when you set this to Retain, the volume WILL persist after the chart is delete and you need to manually delete it
+    reclaimPolicy: "Delete" # choose from: Delete | Retain 
 aws:
   # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name
   serviceAccountName: teku-node-secrets-sa
@@ -27,12 +25,15 @@ azure:
   subscriptionId: azure-subscriptionId
 
 node:
+  removeKeysOnDelete: true
   teku:
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
+  elc:
+    client: besu
   besu:
     envBesuOpts: ""  
     resources:
@@ -40,3 +41,4 @@ node:
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
+    dataPath: "/data/besu"      

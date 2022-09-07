@@ -68,11 +68,11 @@ Server Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCom
 helm repo add elastic https://helm.elastic.co
 helm repo update
 # if on cloud
-helm install elasticsearch --version 7.17.1 elastic/elasticsearch --namespace quorum --create-namespace --values ./values/elasticsearch.yml
+helm install elasticsearch --version 7.17.1 elastic/elasticsearch --namespace teku --create-namespace --values ./values/elasticsearch.yml
 # if local - set the replicas to 1
-helm install elasticsearch --version 7.17.1 elastic/elasticsearch --namespace quorum --create-namespace --values ./values/elasticsearch.yml --set replicas=1 --set minimumMasterNodes=1
-helm install kibana --version 7.17.1 elastic/kibana --namespace quorum --values ./values/kibana.yml
-helm install filebeat --version 7.17.1 elastic/filebeat  --namespace quorum --values ./values/filebeat.yml
+helm install elasticsearch --version 7.17.1 elastic/elasticsearch --namespace teku --create-namespace --values ./values/elasticsearch.yml --set replicas=1 --set minimumMasterNodes=1
+helm install kibana --version 7.17.1 elastic/kibana --namespace teku --values ./values/kibana.yml
+helm install filebeat --version 7.17.1 elastic/filebeat  --namespace teku --values ./values/filebeat.yml
 ```
 
 Please also deploy the ingress (below) and the ingress rules to access kibana on path `http://<INGRESS_IP>/kibana`.
@@ -90,7 +90,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo update
 # NOTE: please refer to values/monitoring.yml to configure the alerts per your requirements ie slack, email etc
 helm install monitoring prometheus-community/kube-prometheus-stack --version 34.10.0 --namespace=quorum --create-namespace --values ./values/monitoring.yml --wait
-kubectl --namespace quorum apply -f  ./values/monitoring/
+kubectl --namespace teku apply -f  ./values/monitoring/
 ```
 
 Additionally, you will need to deploy a separate ingress which will serve external facing services like the explorer and monitoring endpoints
@@ -99,7 +99,7 @@ Additionally, you will need to deploy a separate ingress which will serve extern
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
 helm install quorum-monitoring-ingress ingress-nginx/ingress-nginx \
-    --namespace quorum \
+    --namespace teku \
     --set controller.ingressClassResource.name="monitoring-nginx" \
     --set controller.ingressClassResource.controllerValue="k8s.io/monitoring-ingress-nginx" \
     --set controller.replicaCount=1 \
@@ -132,5 +132,5 @@ http://<INGRESS_IP>/kibana
 
 
 ```bash
-helm install bob ./charts/teku --namespace quorum --create-namespace --values ./values/teku_besu.yml
+helm install bob ./charts/teku --namespace teku --create-namespace --values ./values/teku_besu.yml
 ```
