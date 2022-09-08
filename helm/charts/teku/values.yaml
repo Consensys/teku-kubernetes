@@ -63,6 +63,7 @@ node:
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
+    dataStorageMode: "prune"
     dataPath: "/data"
     keysPath: "/keys"
     logging: INFO
@@ -71,23 +72,26 @@ node:
       host: "0.0.0.0"
       port: 9000
       discovery: true
-      maxPeers: 50
+      lowBoundPeers: 64
+      upperBoundPeers: 100
     restApi:
       enabled: true
       host: "0.0.0.0"
       port: 5051
-      api: '["DEBUG","ETH", "ADMIN", "WEB3", "NET", "TRACE", "TXPOOL"]'
       corsOrigins: '["all"]'
       allowlist: '["*"]'
-      authenticationEnabled: false
     metrics:
       enabled: true
       host: "0.0.0.0"
       port: 8008
+      allowlist: '["*"]'
+      categories: "['BEACON', 'JVM', 'PROCESS', 'DISCOVERY', 'EVENTBUS', 'EXECUTOR', 'LIBP2P', 'NETWORK', 'STORAGE', 'STORAGE_HOT_DB', 'STORAGE_FINALIZED_DB', 'REMOTE_VALIDATOR', 'VALIDATOR', 'VALIDATOR_PERFORMANCE']"
     metricsPush:
       enabled: false
       host: "5.5.5.5"
       interval: 15
+    validators:
+      performanceTrackingMode: "ALL"
 
 aws:
   # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name
@@ -109,11 +113,11 @@ azure:
 image:
   besu:
     repository: hyperledger/besu
-    tag: 22.7.0
+    tag: 22.7.2
     pullPolicy: IfNotPresent
   teku:
     repository: consensys/teku
-    tag: 22.7.0
+    tag: 22.9.0
     pullPolicy: IfNotPresent
   hooks:
     repository: consensys/quorum-k8s-hooks
