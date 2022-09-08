@@ -61,12 +61,28 @@ spec:
       serviceAccountName: {{ include "teku.fullname" . }}-sa
 {{- end }}
       initContainers:
+      - name: wait-for-service
+        image: busybox
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - >-
+              while ! nslookup {{ include "teku.fullname" . }}-discovery; do echo 'service still not up' && sleep 1; done;
+      - name: set-external-ip
+        image: gcr.io/cloud-builders/kubectl:latest
+        command: ["/bin/bash"]
+        args:
+          - -c
+          - >-
+              EXTERNALIP=$(kubectl get services -n {{ .Release.Namespace }} {{ include "teku.fullname" . }}-discovery --output jsonpath='{.status.loadBalancer.ingress[0].ip}');
+              echo $EXTERNALIP;
+              kubectl get cm {{ include "teku.fullname" . }}-besu-config -o yaml -n {{ .Release.Namespace }} | sed "s/p2p-host=.*/p2p-host=\"${EXTERNALIP}\"/g" | kubectl replace -n {{ .Release.Namespace }} -f -
 
 {{- if has .Values.cluster.provider .Values.cluster.storage.volumePermissionsFix }}
       # fix for minikube and PVC's only writable as root https://github.com/kubernetes/minikube/issues/1990
       - name: volume-permission-besu
         image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /data"]
+        command: ["sh", "-c", "chown -R 1000:1000 /data && env"]
         env:
           - name: DISCOVERY_IP
             value: {{ include "teku.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
@@ -100,14 +116,14 @@ spec:
 {{- if .Values.node.elc.besu.envBesuOpts }}
           - name: BESU_OPTS
             value: "{{ .Values.node.besu.envBesuOpts }}"
-{{- end }}    
+{{- end }}
         volumeMounts:
           - name: besu-config
             mountPath: /etc/besu
             readOnly: true
           - name: keys
             mountPath: {{ .Values.node.elc.keysPath }}
-            readOnly: true            
+            readOnly: true
           - name: data
             mountPath: {{ .Values.node.elc.dataPath }}
         ports:
@@ -126,7 +142,7 @@ spec:
           - name: elc-metrics
             containerPort: {{ .Values.node.elc.metrics.port }}
             protocol: TCP
-                      
+
         command:
           - /bin/sh
           - -c
@@ -135,7 +151,7 @@ spec:
             exec
             /opt/besu/bin/besu \
               --config-file=/etc/besu/config.toml \
-              --Xdns-enabled=true --Xdns-update-enabled=true --Xnat-kube-service-name={{ include "teku.fullname" . }}-discovery
+              --nat-method=NONE
 
         livenessProbe:
           httpGet:

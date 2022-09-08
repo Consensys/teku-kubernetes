@@ -1,15 +1,16 @@
 ---
 cluster:
-  provider: azure  # choose from: local | aws | azure
-  cloudNativeServices: false 
+  provider: azure # choose from: local | aws | azure
+  cloudNativeServices: false
   storage:
     sizeLimit: "20Gi"
     pvcSizeLimit: "20Gi"
     # NOTE: when you set this to Retain, the volume WILL persist after the chart is delete and you need to manually delete it
-    reclaimPolicy: "Delete" # choose from: Delete | Retain 
+    reclaimPolicy: "Delete" # choose from: Delete | Retain
   volumePermissionsFix:
     - local
     - aws
+    - azure
 node:
   network: mainnet
   removeKeysOnDelete: true
@@ -50,7 +51,7 @@ node:
       host: "0.0.0.0"
       port: 9545
       # enable if using prometheus-stack metrics monitoring
-      serviceMonitorEnabled: false      
+      serviceMonitorEnabled: false
     besu:
       envBesuOpts: ""
     geth:
@@ -62,7 +63,7 @@ node:
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
-    dataPath: "/data"     
+    dataPath: "/data"
     keysPath: "/keys"
     logging: INFO
     p2p:
@@ -88,8 +89,6 @@ node:
       host: "5.5.5.5"
       interval: 15
 
-
-    
 aws:
   # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name
   serviceAccountName: teku-node-secrets-sa
