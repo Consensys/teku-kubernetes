@@ -24,7 +24,7 @@ data:
     # All other config options are strings, and must be quoted.
 
     # Node Information
-    network={{ .Values.node.network }}
+    network={{ .Values.node.network | quote }}
     data-path={{ .Values.node.elc.dataPath | quote }}
     logging={{ .Values.node.elc.logging | quote }}
     engine-host-allowlist={{ .Values.node.elc.engine.hostAllowlist }}
@@ -36,7 +36,6 @@ data:
     # P2P network
     p2p-enabled={{ .Values.node.elc.p2p.enabled }}
     discovery-enabled={{ .Values.node.elc.p2p.discovery }}
-    static-nodes-file={{ .Values.node.elc.p2p.staticNodes | quote }}
     p2p-host={{ .Values.node.elc.p2p.host | quote }}
     p2p-port={{ .Values.node.elc.p2p.port }}
     max-peers={{ .Values.node.elc.p2p.maxPeers }}

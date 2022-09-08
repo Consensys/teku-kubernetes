@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "teku.fullname" . }}-pre-delete-hook
+  name: {{ include "teku.fullname" . }}-post-delete-hook
   labels:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
     aadpodidbinding: "{{ .Values.azure.identityName }}"
@@ -15,7 +15,7 @@ metadata:
     app.kubernetes.io/managed-by: helm
   namespace: {{ .Release.Namespace }}
   annotations:
-    helm.sh/hook: pre-delete
+    helm.sh/hook: post-delete
     helm.sh/hook-weight: "0"
     helm.sh/hook-delete-policy: "hook-succeeded"
 spec:
@@ -37,7 +37,7 @@ spec:
 {{- end }}    
       restartPolicy: "OnFailure"
       containers:
-        - name: {{ template "teku.fullname" . }}-node-pre-delete-hook
+        - name: {{ template "teku.fullname" . }}-node-post-delete-hook
           image: "{{ .Values.image.hooks.repository }}:{{ .Values.image.hooks.tag }}"
           imagePullPolicy: {{ .Values.image.hooks.pullPolicy }}
           command:
@@ -51,9 +51,9 @@ spec:
                 kubectl delete secret ${key} --namespace {{ .Release.Namespace }}
               }
 
-              echo "{{ template "teku.fullname" . }} pre-delete hook ..."
+              echo "{{ template "teku.fullname" . }} post-delete hook ..."
 {{- if .Values.node.removeKeysOnDelete -}}
               deleteSecret {{ template "teku.fullname" . }}-keys
 {{- end }}       
-              echo "{{ template "teku.fullname" . }} pre-delete hook completed..."
+              echo "{{ template "teku.fullname" . }} post-delete hook completed..."
 
