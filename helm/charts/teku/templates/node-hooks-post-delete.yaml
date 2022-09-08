@@ -7,7 +7,7 @@ metadata:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
     aadpodidbinding: "{{ .Values.azure.identityName }}"
 {{- end }}
-    app.kubernetes.io/name: pre-delete-hook
+    app.kubernetes.io/name: post-delete-hook
     app.kubernetes.io/component: job
     app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
     app.kubernetes.io/namespace: {{ .Release.Namespace }}
@@ -27,7 +27,7 @@ spec:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
         aadpodidbinding: "{{ .Values.azure.identityName }}"
 {{- end}}      
-        app.kubernetes.io/name: {{ include "teku.fullname" . }}-pre-install-hook
+        app.kubernetes.io/name: {{ include "teku.fullname" . }}-post-install-hook
         app.kubernetes.io/instance: {{ .Release.Name }} 
     spec:
 {{- if and (eq .Values.cluster.provider "aws") (.Values.cluster.cloudNativeServices) }}
@@ -46,14 +46,10 @@ spec:
           args:
             - |
 
-              function deleteSecret {
-                key=$1
-                kubectl delete secret ${key} --namespace {{ .Release.Namespace }}
-              }
-
               echo "{{ template "teku.fullname" . }} post-delete hook ..."
-{{- if .Values.node.removeKeysOnDelete -}}
-              deleteSecret {{ template "teku.fullname" . }}-keys
+{{- if .Values.node.removeKeysOnDelete }}
+              kubectl delete secret {{ template "teku.fullname" . }}-keys --namespace {{ .Release.Namespace }}
 {{- end }}       
               echo "{{ template "teku.fullname" . }} post-delete hook completed..."
+              
 
