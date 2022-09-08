@@ -61,37 +61,29 @@ spec:
       serviceAccountName: {{ include "teku.fullname" . }}-sa
 {{- end }}
       initContainers:
-      - name: wait-for-service
-        image: busybox
-        command: ["/bin/sh"]
-        args:
+      - name: besu-init
+        image: {{ .Values.image.hooks.repository }}:{{ .Values.image.hooks.tag }}
+        securityContext:
+          runAsUser: 0
+        command:
+          - /bin/bash
           - -c
-          - >-
-              while ! nslookup {{ include "teku.fullname" . }}-discovery; do echo 'service still not up' && sleep 1; done;
-      - name: set-external-ip
-        image: gcr.io/cloud-builders/kubectl:latest
-        command: ["/bin/bash"]
         args:
-          - -c
-          - >-
-              EXTERNALIP=$(kubectl get services -n {{ .Release.Namespace }} {{ include "teku.fullname" . }}-discovery --output jsonpath='{.status.loadBalancer.ingress[0].ip}');
-              echo $EXTERNALIP;
-              kubectl get cm {{ include "teku.fullname" . }}-besu-config -o yaml -n {{ .Release.Namespace }} | sed "s/p2p-host=.*/p2p-host=\"${EXTERNALIP}\"/g" | kubectl replace -n {{ .Release.Namespace }} -f -
+          - |
+            exec
+            # wait fot the load balancer to be up so we can use the external ip for discovery
+            while ! nslookup {{ include "teku.fullname" . }}-discovery; do echo 'service still not up' && sleep 1; done;
+            EXTERNALIP=$(kubectl get services -n {{ .Release.Namespace }} {{ include "teku.fullname" . }}-discovery --output jsonpath='{.status.loadBalancer.ingress[0].ip}');
+            echo $EXTERNALIP;
+            kubectl get cm {{ include "teku.fullname" . }}-besu-config -o yaml -n {{ .Release.Namespace }} | sed "s/p2p-host=.*/p2p-host=\"${EXTERNALIP}\"/g" | kubectl replace -n {{ .Release.Namespace }} -f -
 
 {{- if has .Values.cluster.provider .Values.cluster.storage.volumePermissionsFix }}
-      # fix for minikube and PVC's only writable as root https://github.com/kubernetes/minikube/issues/1990
-      - name: volume-permission-besu
-        image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /data && env"]
-        env:
-          - name: DISCOVERY_IP
-            value: {{ include "teku.fullname" . }}-discovery.{{ .Release.Namespace }}.svc.cluster.local
+            # fix for minikube and PVC's only writable as root https://github.com/kubernetes/minikube/issues/1990
+            chown -R 1000:1000 /data
+{{- end}}
         volumeMounts:
           - name: data
             mountPath: /data
-        securityContext:
-          runAsUser: 0
-{{- end}}
 
       containers:
       - name: {{ .Release.Name }}-besu

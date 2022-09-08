@@ -1,6 +1,6 @@
 ---
 cluster:
-  provider: azure # choose from: local | aws | azure
+  provider: azure # choose from: aws | azure
   cloudNativeServices: false
   storage:
     sizeLimit: "20Gi"
@@ -8,9 +8,8 @@ cluster:
     # NOTE: when you set this to Retain, the volume WILL persist after the chart is delete and you need to manually delete it
     reclaimPolicy: "Delete" # choose from: Delete | Retain
   volumePermissionsFix:
-    - local
-    - aws
     - azure
+
 node:
   network: mainnet
   removeKeysOnDelete: true
@@ -117,5 +116,5 @@ image:
     pullPolicy: IfNotPresent
   hooks:
     repository: consensys/quorum-k8s-hooks
-    tag: qgt-0.1.7
+    tag: 22.9.1
     pullPolicy: IfNotPresent
