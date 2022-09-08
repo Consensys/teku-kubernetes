@@ -45,7 +45,7 @@ data:
     p2p-port: {{ .Values.node.teku.p2p.port }}
     p2p-peer-lower-bound: {{ .Values.node.teku.p2p.lowBoundPeers }}
     p2p-peer-upper-bound: {{ .Values.node.teku.p2p.upperBoundPeers }}
-    p2p-advertised-ip: ""
+    p2p-advertised-ip: {{ .Values.node.teku.p2p.host | quote }}
     {{ end }}
 
     {{ if  .Values.node.teku.restApi.enabled -}}
@@ -65,6 +65,6 @@ data:
     metrics-port: {{ .Values.node.teku.metrics.port }}
     {{ if .Values.node.teku.metricsPush.enabled -}}
     metrics-publish-endpoint: {{ .Values.node.teku.metricsPush.host }}
-    metrics-publish-interval : {{ .Values.node.teku.metricsPush.interval }}
+    metrics-publish-interval: {{ .Values.node.teku.metricsPush.interval }}
     {{ end }}
     {{ end }}

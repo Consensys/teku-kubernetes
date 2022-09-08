@@ -34,6 +34,7 @@ node:
     initialState: ""
   elc:
     client: besu
+    jwtSharedKey: ""
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
