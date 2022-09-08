@@ -41,7 +41,7 @@ spec:
     - name: libp2p
       port: {{ .Values.node.teku.p2p.port }}
       targetPort: libp2p
-      protocol: TCP      
+      protocol: TCP
     - name: discovery
       port: {{ .Values.node.teku.p2p.port }}
       targetPort: discovery
@@ -53,7 +53,7 @@ spec:
     - name: metrics
       port: {{ .Values.node.teku.metrics.port }}
       targetPort: metrics
-      protocol: TCP      
+      protocol: TCP
 
 {{- if .Values.node.metrics.serviceMonitorEnabled }}
 ---

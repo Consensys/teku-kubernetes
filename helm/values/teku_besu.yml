@@ -1,7 +1,7 @@
 ---
 cluster:
-  provider: azure  # choose from: aws | azure
-  cloudNativeServices: false 
+  provider: azure # choose from: aws | azure
+  cloudNativeServices: false
 
 aws:
   # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name
@@ -28,6 +28,10 @@ node:
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
+    validators:
+      # validatorKeyPath
+      validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
+    initialState: ""
   elc:
     client: besu
     resources:
@@ -35,4 +39,4 @@ node:
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"
-    dataPath: "/data"      
+    dataPath: "/data"

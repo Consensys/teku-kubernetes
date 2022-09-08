@@ -28,9 +28,8 @@ spec:
     - name: libp2p
       port: {{ .Values.node.teku.p2p.port }}
       targetPort: libp2p
-      protocol: TCP      
+      protocol: TCP
     - name: discovery
       port: {{ .Values.node.teku.p2p.port }}
       targetPort: discovery
       protocol: UDP
-    

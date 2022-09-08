@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "teku.fullname" . }}-teku-config
+  labels:
+    app.kubernetes.io/name: teku-config
+    app.kubernetes.io/component: teku
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ template "teku.chart" . }}
+    app.kubernetes.io/release: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
+    heritage: {{ .Release.Service }}
+    helm.sh/chart: {{ include "teku.chart" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  config.yml: |-
+    # Node Information
+    network: {{ .Values.node.network | quote }}
+    data-path: {{ .Values.node.teku.dataPath | quote }}
+    data-storage-mode: {{ .Values.node.teku.dataStorageMode | quote }}
+    logging: {{ .Values.node.teku.logging | quote }}
+
+    validators-performance-tracking-mode: {{ .Values.node.teku.validators.performanceTrackingMode | quote }}
+    {{ if .Values.node.teku.initialState -}}
+    initial-state: {{ .Values.node.teku.initialState | quote }}
+    {{ end }}
+    {{ if .Values.node.teku.validators.validatorKeyPath -}}
+    validator-keys: {{ .Values.node.teku.validators.validatorKeyPath | quote }}
+    {{ end }}
+
+    {{ if .Values.node.teku.validators.validatorDefaultFeeRecipient -}}
+    validators-proposer-default-fee-recipient: {{ .Values.node.teku.validators.validatorDefaultFeeRecipient | quote }}
+    {{ end }}
+
+    # Execution Layer Connection
+    ee-endpoint: "http://{{ include "teku.fullname" . }}-internal:{{ .Values.node.elc.engine.port }}"
+    ee-jwt-secret-file: {{ .Values.node.elc.engine.jwtSecretPath | quote }}
+
+    {{ if  .Values.node.teku.p2p.enabled -}}
+    # P2P network
+    p2p-enabled: {{ .Values.node.teku.p2p.enabled }}
+    p2p-discovery-enabled: {{ .Values.node.teku.p2p.discovery }}
+    p2p-interface: {{ .Values.node.teku.p2p.host | quote }}
+    p2p-port: {{ .Values.node.teku.p2p.port }}
+    p2p-peer-lower-bound: {{ .Values.node.teku.p2p.lowBoundPeers }}
+    p2p-peer-upper-bound: {{ .Values.node.teku.p2p.upperBoundPeers }}
+    p2p-advertised-ip: ""
+    {{ end }}
+
+    {{ if  .Values.node.teku.restApi.enabled -}}
+    # Beacon restApi API
+    rest-api-enabled: {{ .Values.node.teku.restApi.enabled }}
+    rest-api-interface: {{ .Values.node.teku.restApi.host | quote }}
+    rest-api-port: {{ .Values.node.teku.restApi.port }}
+    rest-api-cors-origins: {{ .Values.node.teku.restApi.corsOrigins }}
+    {{ end }}
+
+    {{ if  .Values.node.teku.metrics.enabled -}}
+    # Metrics
+    metrics-enabled: {{ .Values.node.teku.metrics.enabled }}
+    metrics-host-allowlist: {{ .Values.node.teku.metrics.allowlist }}
+    metrics-categories: {{ .Values.node.teku.metrics.categories  }}
+    metrics-interface: {{ .Values.node.teku.metrics.host | quote }}
+    metrics-port: {{ .Values.node.teku.metrics.port }}
+    {{ if .Values.node.teku.metricsPush.enabled -}}
+    metrics-publish-endpoint: {{ .Values.node.teku.metricsPush.host }}
+    metrics-publish-interval : {{ .Values.node.teku.metricsPush.interval }}
+    {{ end }}
+    {{ end }}
