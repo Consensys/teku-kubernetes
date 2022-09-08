@@ -48,7 +48,12 @@ spec:
 
               function createSharedSecret {
                 rm /tmp/jwtsecret.hex
+                # use a predefined key if provided
+{{- if .Values.node.elc.jwtSharedKey }}  
+                echo "{{ .Values.node.elc.jwtSharedKey }}" > /tmp/jwtsecret.hex
+{{- else }}
                 openssl rand -hex 32 | tr -d "\n" > /tmp/jwtsecret.hex
+{{- end }}
               }
 
               # keys here is generic if there are more to add in?

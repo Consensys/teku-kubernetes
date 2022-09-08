@@ -17,6 +17,7 @@ node:
     serviceMonitorEnabled: false
   elc:
     client: besu
+    jwtSharedKey: ""
     resources:
       cpuLimit: 0.7
       cpuRequest: 0.5
