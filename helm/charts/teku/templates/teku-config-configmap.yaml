@@ -25,7 +25,7 @@ data:
     {{ if .Values.node.teku.initialState -}}
     initial-state: {{ .Values.node.teku.initialState | quote }}
     {{ end }}
-    {{ if .Values.node.teku.validators.validatorKeyPath -}}
+    {{ if .Values.node.teku.validators.validatorKeyPath is defined and .Values.node.teku.validators.validatorKeyPath|length -}}
     validator-keys: {{ .Values.node.teku.validators.validatorKeyPath | quote }}
     {{ end }}
 

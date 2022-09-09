@@ -13,12 +13,12 @@ cluster:
     serviceAccountName: teku-node-secrets-sa # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name
     region: ap-southeast-2
   azure:
-    identityName: quorum-pod-identity    # the script/bootstrap.sh uses the name 'quorum-pod-identity' so only change this if you altered the name
-    identityClientId: azure-clientId     # the clientId of the user assigned managed identity created in the template
+    identityName: quorum-pod-identity # the script/bootstrap.sh uses the name 'quorum-pod-identity' so only change this if you altered the name
+    identityClientId: azure-clientId # the clientId of the user assigned managed identity created in the template
     keyvaultName: azure-keyvault
-    tenantId: azure-tenantId             # the tenant ID of the key vault
+    tenantId: azure-tenantId # the tenant ID of the key vault
     subscriptionId: azure-subscriptionId # the subscription ID to use - this needs to be set explictly when using multi tenancy
-    
+
 node:
   removeKeysOnDelete: true
   metrics:
@@ -30,7 +30,7 @@ node:
       memLimit: "8G"
       memRequest: "6G"
     validators:
-      # validatorKeyPath
+      validatorKeyPath: "/keys/validators"
       validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
     initialState: ""
     env_opts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx8g -XX:SoftMaxHeapSize=3g"

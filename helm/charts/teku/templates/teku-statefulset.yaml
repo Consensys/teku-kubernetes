@@ -113,11 +113,16 @@ spec:
           - name: teku-config
             mountPath: /etc/teku
             readOnly: true
-          - name: keys
+          - name: jwt
             mountPath: {{ .Values.node.teku.keysPath }}
             readOnly: true
           - name: data
             mountPath: {{ .Values.node.teku.dataPath }}
+{{- if .Values.node.teku.validators.validatorKeyPath is defined and .Values.node.teku.validators.validatorKeyPath|length }}
+          - name: validator-keys
+            mountPath: {{ .Values.node.teku.validators.validatorKeyPath }}
+            readOnly: true
+{{- end }}
         ports:
           - name: clc-rest
             containerPort: {{ .Values.node.teku.restApi.port }}
@@ -150,6 +155,9 @@ spec:
       - name: teku-config
         configMap:
           name: {{ include "teku.fullname" . }}-teku-config
-      - name: keys
+      - name: jwt
         secret:
           secretName: {{ include "teku.fullname" . }}-keys
+      - name: validator-keys
+        secret:
+          secretName: {{ include "teku.fullname" . }}-teku-validator-keys
