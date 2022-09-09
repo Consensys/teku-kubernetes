@@ -97,8 +97,7 @@ You can then access Grafana on:
 http://<INGRESS_IP>/d/XE4V0WGZz/besu-overview?orgId=1&refresh=10s
 
 # For Teku's grafana address:
-# TODO
-http://<INGRESS_IP>/d/a1lVy7ycin9Yv/teku-overview?orgId=1&refresh=10s
+http://<INGRESS_IP>/d/DzqnL9oGk/teku-overview?orgId=1&refresh=10s
 ```
 
 You can access Kibana on:
@@ -109,3 +108,6 @@ http://<INGRESS_IP>/kibana
 ```bash
 helm install reader ./charts/teku --namespace teku --create-namespace --values ./values/teku_besu.yml
 ```
+
+### _Validator Keys_
+If you are deploying with validator keys, please put the relevant encrypted json keys and passwords as txt files in the [validator](../helm/charts/teku/validator/) folder and set the `.Values.node.teku.validators.enabled` value
