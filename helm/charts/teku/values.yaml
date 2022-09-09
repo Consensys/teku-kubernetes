@@ -101,8 +101,10 @@ node:
     validators:
       enabled: false
       performanceTrackingMode: "ALL"
-      validatorKeyPath: "/validators/keys"
-      validatorSecretsPath: "/validators/secrets"
+      validatorKeysPath: "/validator/keys"
+      validatorPasswordsPath: "/validator/passwords"
+      validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
+
 image:
   besu:
     repository: hyperledger/besu

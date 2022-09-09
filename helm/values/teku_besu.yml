@@ -32,8 +32,8 @@ node:
     validators:
       enabled: false
       performanceTrackingMode: "ALL"
-      validatorKeyPath: "/validators/keys"
-      validatorSecretsPath: "/validators/secrets"
+      validatorKeysPath: "/validator/keys"
+      validatorPasswordsPath: "/validator/passwords"
       validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
     initialState: ""
     env_opts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx8g -XX:SoftMaxHeapSize=3g"
