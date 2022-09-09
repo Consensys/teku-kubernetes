@@ -105,6 +105,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+{{- if .Values.node.teku.env_opts }}
+          - name: TEKU_OPTS
+            value: "{{ .Values.node.teku.env_opts }}"
+{{- end }}
         volumeMounts:
           - name: teku-config
             mountPath: /etc/teku
