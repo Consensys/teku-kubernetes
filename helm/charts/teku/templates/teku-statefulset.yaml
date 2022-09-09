@@ -122,6 +122,9 @@ spec:
           - name: validator-keys
             mountPath: {{ .Values.node.teku.validators.validatorKeyPath }}
             readOnly: true
+          - name: validator-secrets
+            mountPath: {{ .Values.node.teku.validators.validatorSecretsPath }}
+            readOnly: true            
 {{- end }}
         ports:
           - name: clc-rest
@@ -158,6 +161,11 @@ spec:
       - name: jwt
         secret:
           secretName: {{ include "teku.fullname" . }}-keys
+{{- if .Values.node.teku.validators.enabled }}          
       - name: validator-keys
         secret:
           secretName: {{ include "teku.fullname" . }}-teku-validator-keys
+      - name: validator-secrets
+        secret:
+          secretName: {{ include "teku.fullname" . }}-teku-validator-secrets
+{{- end }}          
