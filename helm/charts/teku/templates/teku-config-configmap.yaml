@@ -54,6 +54,7 @@ data:
     rest-api-interface: {{ .Values.node.teku.restApi.host | quote }}
     rest-api-port: {{ .Values.node.teku.restApi.port }}
     rest-api-cors-origins: {{ .Values.node.teku.restApi.corsOrigins }}
+    rest-api-host-allowlist: {{ .Values.node.teku.restApi.allowlist }}
     {{ end }}
 
     {{ if  .Values.node.teku.metrics.enabled -}}

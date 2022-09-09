@@ -142,8 +142,8 @@ spec:
 
         livenessProbe:
           httpGet:
-            path: /liveness
-            port: 8545
+            path: "/teku/v1/admin/liveness"
+            port: {{ .Values.node.teku.restApi.port }}
           initialDelaySeconds: 180
           periodSeconds: 60
       volumes:

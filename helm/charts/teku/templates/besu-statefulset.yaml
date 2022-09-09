@@ -150,7 +150,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /liveness
-            port: 8545
+            port: {{ .Values.node.elc.rpc.port }}
           initialDelaySeconds: 180
           periodSeconds: 60
       volumes:
