@@ -118,7 +118,7 @@ spec:
             readOnly: true
           - name: data
             mountPath: {{ .Values.node.teku.dataPath }}
-{{- if .Values.node.teku.validators.validatorKeyPath is defined and .Values.node.teku.validators.validatorKeyPath|length }}
+{{- if .Values.node.teku.validators.enabled }}
           - name: validator-keys
             mountPath: {{ .Values.node.teku.validators.validatorKeyPath }}
             readOnly: true
