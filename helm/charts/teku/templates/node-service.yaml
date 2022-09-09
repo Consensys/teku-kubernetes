@@ -74,7 +74,7 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "teku.fullname" . }}
+      app.kubernetes.io/name: internal
       app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
       app.kubernetes.io/namespace: {{ .Release.Namespace }}
   endpoints:
