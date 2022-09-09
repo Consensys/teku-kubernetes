@@ -26,7 +26,7 @@ data:
     initial-state: {{ .Values.node.teku.initialState | quote }}
     {{ end }}
     {{ if .Values.node.teku.validators.enabled -}}
-    validator-keys: {{ .Values.node.teku.validators.validatorKeyPath | quote }}
+    validator-keys: "{{ .Values.node.teku.validators.validatorKeyPath }}:{{ .Values.node.teku.validators.validatorPasswordPath }}"
     {{ end }}
 
     {{ if .Values.node.teku.validators.validatorDefaultFeeRecipient -}}

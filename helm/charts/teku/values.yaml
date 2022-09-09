@@ -101,7 +101,8 @@ node:
     validators:
       enabled: false
       performanceTrackingMode: "ALL"
-      validatorKeyPath: "/keys/validators"
+      validatorKeyPath: "/validators/keys"
+      validatorPasswordPath: "/validators/passwords"
 
 image:
   besu:
