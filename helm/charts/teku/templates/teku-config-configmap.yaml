@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: teku-config
     app.kubernetes.io/component: teku
     app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
-    app.kubernetes.io/namespace: {{ template "teku.chart" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
     app.kubernetes.io/release: {{ .Release.Name }}
     app.kubernetes.io/managed-by: helm
     heritage: {{ .Release.Service }}

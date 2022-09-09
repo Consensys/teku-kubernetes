@@ -65,7 +65,7 @@ metadata:
     release: monitoring
     app.kubernetes.io/name: {{ include "teku.fullname" . }}
     app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
-    app.kubernetes.io/namespace: {{ template "teku.chart" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
     app.kubernetes.io/release: monitoring
   namespace: {{ .Release.Namespace }}
 spec:

@@ -8,11 +8,9 @@ metadata:
     app.kubernetes.io/name: besu-config
     app.kubernetes.io/component: besu
     app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
-    app.kubernetes.io/namespace: {{ template "teku.chart" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
     app.kubernetes.io/release: {{ .Release.Name }}
     app.kubernetes.io/managed-by: helm
-    heritage: {{ .Release.Service }}
-    helm.sh/chart: {{ include "teku.chart" . }}
   namespace: {{ .Release.Namespace }}
 data:
   config.toml: |-
