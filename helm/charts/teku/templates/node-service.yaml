@@ -24,7 +24,7 @@ spec:
       protocol: TCP
     - name: elc-engine
       port: {{ .Values.node.elc.engine.port }}
-      targetPort: elc-ws
+      targetPort: elc-engine
       protocol: TCP
     - name: elc-rlpx
       port: {{ .Values.node.elc.p2p.port }}
@@ -38,21 +38,21 @@ spec:
       port: {{ .Values.node.elc.metrics.port }}
       targetPort: elc-metrics
       protocol: TCP
-    - name: libp2p
+    - name: clc-libp2p
       port: {{ .Values.node.teku.p2p.port }}
-      targetPort: libp2p
+      targetPort: clc-libp2p
       protocol: TCP
-    - name: discovery
+    - name: clc-discovery
       port: {{ .Values.node.teku.p2p.port }}
-      targetPort: discovery
+      targetPort: clc-discovery
       protocol: UDP
-    - name: rest-api
+    - name: clc-rest
       port: {{ .Values.node.teku.restApi.port }}
-      targetPort: rest-api
+      targetPort: clc-rest
       protocol: TCP
-    - name: metrics
+    - name: clc-metrics
       port: {{ .Values.node.teku.metrics.port }}
-      targetPort: metrics
+      targetPort: clc-metrics
       protocol: TCP
 
 {{- if .Values.node.metrics.serviceMonitorEnabled }}
@@ -74,11 +74,11 @@ spec:
     - {{ .Release.Namespace }}
   selector:
     matchLabels:
-    app.kubernetes.io/name: {{ include "teku.fullname" . }}
-    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
-    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+      app.kubernetes.io/name: {{ include "teku.fullname" . }}
+      app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+      app.kubernetes.io/namespace: {{ .Release.Namespace }}
   endpoints:
-  - port: metrics
+  - port: clc-metrics
     interval: 15s
     path: /metrics
     scheme: http

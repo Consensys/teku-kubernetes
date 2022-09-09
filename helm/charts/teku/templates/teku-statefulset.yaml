@@ -122,7 +122,7 @@ spec:
           - name: clc-rest
             containerPort: {{ .Values.node.teku.restApi.port }}
             protocol: TCP
-          - name: clc-rlpx
+          - name: clc-libp2p
             containerPort: {{ .Values.node.teku.p2p.port }}
             protocol: TCP
           - name: clc-discovery

@@ -25,11 +25,11 @@ spec:
       port: {{ .Values.node.elc.p2p.port }}
       targetPort: elc-discovery
       protocol: UDP
-    - name: libp2p
+    - name: clc-libp2p
       port: {{ .Values.node.teku.p2p.port }}
-      targetPort: libp2p
+      targetPort: clc-libp2p
       protocol: TCP
-    - name: discovery
+    - name: clc-discovery
       port: {{ .Values.node.teku.p2p.port }}
-      targetPort: discovery
+      targetPort: clc-discovery
       protocol: UDP

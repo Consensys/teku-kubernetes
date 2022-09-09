@@ -75,7 +75,7 @@ Additionally, you will need to deploy a separate ingress which will serve extern
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
-helm install quorum-monitoring-ingress ingress-nginx/ingress-nginx \
+helm install teku-monitoring-ingress ingress-nginx/ingress-nginx \
     --namespace teku \
     --set controller.ingressClassResource.name="monitoring-nginx" \
     --set controller.ingressClassResource.controllerValue="k8s.io/monitoring-ingress-nginx" \

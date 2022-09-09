@@ -88,3 +88,5 @@ Please use these as a reference and develop solutions to match your network topo
 
 #### Logging
 Node logs can be [configured](https://besu.hyperledger.org/en/latest/HowTo/Troubleshoot/Logging/#advanced-custom-logging) to suit your environment. For example, if you would like to log to file and then have parsed via logstash into an ELK cluster, please use the Elastic charts as well
+
+

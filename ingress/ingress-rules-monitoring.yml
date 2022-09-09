@@ -4,7 +4,7 @@ apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
   name: monitoring-nginx
-  namespace: quorum
+  namespace: teku
 spec:
   controller: k8s.io/monitoring-ingress-nginx
 
@@ -12,8 +12,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: besu-ingress-monitoring-routes
-  namespace: quorum
+  name: teku-ingress-monitoring-routes
+  namespace: teku
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/use-regex: "true"
@@ -27,20 +27,6 @@ spec:
   rules:
   - http:
       paths:
-      - path: /blockscout
-        pathType: Prefix
-        backend:
-          service:
-            name: blockscout
-            port:
-              number: 4000
-      - path: /explorer
-        pathType: Prefix
-        backend:
-          service:
-            name: quorum-explorer
-            port:
-              number: 80
       - path: /kibana
         pathType: Prefix
         backend:

@@ -2,26 +2,27 @@
 cluster:
   provider: azure # choose from: aws | azure
   cloudNativeServices: false
-
-aws:
-  # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name
-  serviceAccountName: teku-node-secrets-sa
-  # the region you are deploying to
-  region: ap-southeast-2
-
-azure:
-  # the script/bootstrap.sh uses the name 'quorum-pod-identity' so only change this if you altered the name
-  identityName: quorum-pod-identity
-  # the clientId of the user assigned managed identity created in the template
-  identityClientId: azure-clientId
-  keyvaultName: azure-keyvault
-  # the tenant ID of the key vault
-  tenantId: azure-tenantId
-  # the subscription ID to use - this needs to be set explictly when using multi tenancy
-  subscriptionId: azure-subscriptionId
-
+  storage:
+    sizeLimit: "20Gi"
+    pvcSizeLimit: "20Gi"
+    # NOTE: when you set this to Retain, the volume WILL persist after the chart is delete and you need to manually delete it
+    reclaimPolicy: "Delete" # choose from: Delete | Retain
+  volumePermissionsFix:
+    - azure
+  aws:
+    serviceAccountName: teku-node-secrets-sa # the aws cli commands uses the name 'quorum-node-secrets-sa' so only change this if you altered the name
+    region: ap-southeast-2
+  azure:
+    identityName: quorum-pod-identity    # the script/bootstrap.sh uses the name 'quorum-pod-identity' so only change this if you altered the name
+    identityClientId: azure-clientId     # the clientId of the user assigned managed identity created in the template
+    keyvaultName: azure-keyvault
+    tenantId: azure-tenantId             # the tenant ID of the key vault
+    subscriptionId: azure-subscriptionId # the subscription ID to use - this needs to be set explictly when using multi tenancy
+    
 node:
   removeKeysOnDelete: true
+  metrics:
+    serviceMonitorEnabled: true
   teku:
     resources:
       cpuLimit: 1
