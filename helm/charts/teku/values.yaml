@@ -19,9 +19,9 @@ node:
     client: besu
     jwtSharedKey: ""
     resources:
-      cpuLimit: 0.7
+      cpuLimit: 1
       cpuRequest: 0.5
-      memLimit: "2G"
+      memLimit: "4G"
       memRequest: "1G"
     dataPath: "/data"
     keysPath: "/keys"
@@ -61,12 +61,13 @@ node:
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
-      memLimit: "2G"
+      memLimit: "4G"
       memRequest: "1G"
     dataStorageMode: "prune"
     dataPath: "/data"
     keysPath: "/keys"
     logging: INFO
+    env_opts: ""
     p2p:
       enabled: true
       host: "0.0.0.0"

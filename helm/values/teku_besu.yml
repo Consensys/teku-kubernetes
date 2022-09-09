@@ -26,18 +26,19 @@ node:
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
-      memLimit: "2G"
+      memLimit: "4G"
       memRequest: "1G"
     validators:
       # validatorKeyPath
       validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
     initialState: ""
+    env_opts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx4g -XX:SoftMaxHeapSize=2g"
   elc:
     client: besu
     jwtSharedKey: ""
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
-      memLimit: "2G"
+      memLimit: "4G"
       memRequest: "1G"
     dataPath: "/data"
