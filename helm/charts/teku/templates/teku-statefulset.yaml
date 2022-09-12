@@ -118,12 +118,11 @@ spec:
             readOnly: true
           - name: data
             mountPath: {{ .Values.node.teku.dataPath }}
+            # mounting both keys and passwords in the one folder as one secret coz k8s puts a
+            # timestamp for multiple secrets at mount which breaks the way teku reads passwords
 {{- if .Values.node.teku.validators.enabled }}
           - name: validator-keys
             mountPath: {{ .Values.node.teku.validators.validatorKeysPath }}
-            readOnly: true
-          - name: validator-passwords
-            mountPath: {{ .Values.node.teku.validators.validatorPasswordsPath }}
             readOnly: true
 {{- end }}
         ports:
@@ -165,7 +164,4 @@ spec:
       - name: validator-keys
         secret:
           secretName: {{ include "teku.fullname" . }}-teku-validator-keys
-      - name: validator-passwords
-        secret:
-          secretName: {{ include "teku.fullname" . }}-teku-validator-passwords
 {{- end }}          
