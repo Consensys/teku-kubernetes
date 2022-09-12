@@ -23,9 +23,10 @@ data:
 
     # Node Information
     network={{ .Values.node.network | quote }}
+    sync-mode={{ .Values.node.elc.syncmode | quote }}
     data-path={{ .Values.node.elc.dataPath | quote }}
     logging={{ .Values.node.elc.logging | quote }}
-    engine-host-allowlist={{ .Values.node.elc.engine.hostAllowlist }}
+    engine-host-allowlist={{ .Values.node.elc.engine.hostAllowlist | toJson }}
     engine-rpc-port={{ .Values.node.elc.engine.port }}
     engine-jwt-secret={{ .Values.node.elc.engine.jwtSecretPath | quote }}
     Xmerge-support={{ .Values.node.elc.engine.xMmergeSupport }}
@@ -39,17 +40,14 @@ data:
     max-peers={{ .Values.node.elc.p2p.maxPeers }}
     {{ end }}
 
-    {{ if or .Values.node.elc.rpc.enabled }}
-    host-allowlist={{ .Values.node.elc.http.allowlist }}
-    {{ end }}
-
     {{ if  .Values.node.elc.rpc.enabled -}}
     # JSON-RPC
     rpc-http-enabled={{ .Values.node.elc.rpc.enabled }}
     rpc-http-host={{ .Values.node.elc.rpc.host | quote }}
     rpc-http-port={{ .Values.node.elc.rpc.port }}
-    rpc-http-api={{ .Values.node.elc.rpc.api }}
-    rpc-http-cors-origins={{ .Values.node.elc.rpc.corsOrigins }}
+    rpc-http-api={{ .Values.node.elc.rpc.api | toJson | upper}}
+    host-allowlist={{ .Values.node.elc.rpc.hostAllowlist | toJson }}
+    rpc-http-cors-origins={{ .Values.node.elc.rpc.corsOrigins | toJson }}
     rpc-http-authentication-enabled={{ .Values.node.elc.rpc.authenticationEnabled }}
     revert-reason-enabled=true
     {{ end }}

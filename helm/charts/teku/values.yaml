@@ -26,6 +26,8 @@ node:
     serviceMonitorEnabled: true
   elc:
     client: besu
+    syncmode: "snap" #besu: FAST/FULL/X_SNAP/X_CHECKPOINT ; #geth: snap/full/light
+    identity: "tekuElcNode"
     jwtSharedKey: ""
     resources:
       cpuLimit: 1
@@ -36,7 +38,9 @@ node:
     keysPath: "/keys"
     logging: INFO
     engine:
-      hostAllowlist: '["*"]'
+      hostAllowlist: 
+        - "*"
+      host: "0.0.0.0"
       port: 8551
       jwtSecretPath: "/keys/jwtSharedSecret.hex"
       xMmergeSupport: true
@@ -50,11 +54,21 @@ node:
       enabled: true
       host: "0.0.0.0"
       port: 8545
-      api: '["DEBUG","ETH", "ADMIN", "WEB3", "NET", "TRACE", "TXPOOL"]'
-      corsOrigins: '["all"]'
+      api: 
+        - debug
+        - eth
+        - admin
+        - web3
+        - net
+        - trace
+        - txpool
+      hostAllowlist: 
+        - "*"
+      vHosts: 
+        - "*"
+      corsOrigins:
+        - "*"
       authenticationEnabled: false
-    http:
-      allowlist: '["*"]'
     metrics:
       enabled: true
       host: "0.0.0.0"
@@ -106,13 +120,17 @@ node:
       validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
 
 image:
+  teku:
+    repository: consensys/teku
+    tag: 22.9.0
+    pullPolicy: IfNotPresent
   besu:
     repository: hyperledger/besu
     tag: 22.7.2
     pullPolicy: IfNotPresent
-  teku:
-    repository: consensys/teku
-    tag: 22.9.0
+  geth:
+    repository: ethereum/client-go
+    tag: v1.10.23-amd64
     pullPolicy: IfNotPresent
   hooks:
     repository: consensys/quorum-k8s-hooks
