@@ -56,7 +56,7 @@ Setting the `cluster.cloudNativeServices: true` will:
 #### Providers
 If you are deploying to cloud, we support AWS and Azure at present. Please refer to the [Azure deployment documentation](./azure/README.md) or the [AWS deployment documentation](./aws/README.md).
 
-| ⚠️ **Note**: As of writing this (12/9/22), only Azure works. We are awaiting AWS upgrading K8S ver 1.24 - this allows loadbalancers to use TCP & UDP on the same port       |
+| ⚠️ **Note**: As of writing this (12/9/22), only Azure works. We are awaiting AWS upgrading K8S ver 1.24 - this allows loadbalancers to use TCP & UDP on the same port       
 |
 | ---                                                                                                                                                                                                   |
 
