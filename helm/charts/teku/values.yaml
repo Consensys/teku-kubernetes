@@ -101,8 +101,8 @@ node:
     validators:
       enabled: false
       performanceTrackingMode: "ALL"
-      validatorKeysPath: "/validator/keys"
-      validatorPasswordsPath: "/validator/passwords"
+      validatorKeysPath: "/validator"
+      validatorPasswordsPath: "/validator"
       validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
 
 image:

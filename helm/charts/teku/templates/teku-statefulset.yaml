@@ -122,9 +122,6 @@ spec:
           - name: validator-keys
             mountPath: {{ .Values.node.teku.validators.validatorKeysPath }}
             readOnly: true
-          - name: validator-passwords
-            mountPath: {{ .Values.node.teku.validators.validatorPasswordsPath }}
-            readOnly: true
 {{- end }}
         ports:
           - name: clc-rest
@@ -165,7 +162,4 @@ spec:
       - name: validator-keys
         secret:
           secretName: {{ include "teku.fullname" . }}-teku-validator-keys
-      - name: validator-passwords
-        secret:
-          secretName: {{ include "teku.fullname" . }}-teku-validator-passwords
 {{- end }}          

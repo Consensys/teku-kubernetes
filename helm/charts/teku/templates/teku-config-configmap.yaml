@@ -27,6 +27,8 @@ data:
     {{ end }}
     {{ if .Values.node.teku.validators.enabled -}}
     validator-keys: "{{ .Values.node.teku.validators.validatorKeysPath }}:{{ .Values.node.teku.validators.validatorPasswordsPath }}"
+    # when pulling from k8s secrets or keyvault etc, it is read only so the lock will not work, additionally the pod only has permissions to read and not update/create the secrets so its safe
+    validators-keystore-locking-enabled: "false"
     {{ end }}
 
     {{ if .Values.node.teku.validators.validatorDefaultFeeRecipient -}}
