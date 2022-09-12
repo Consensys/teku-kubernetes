@@ -73,7 +73,7 @@ spec:
               sleep 10;
               EXTERNALIP=$(kubectl get services -n {{ .Release.Namespace }} {{ include "teku.fullname" . }}-discovery --output jsonpath='{.status.loadBalancer.ingress[0].ip}');
               echo $EXTERNALIP;
-              kubectl get cm {{ include "teku.fullname" . }}-geth-config -o yaml -n {{ .Release.Namespace }} | sed "s/nat-extip: .*/nat-extip=\"${EXTERNALIP}\"/g" | kubectl replace -n {{ .Release.Namespace }} -f -
+              kubectl get cm {{ include "teku.fullname" . }}-geth-config -o yaml -n {{ .Release.Namespace }} | sed "s/nat-extip:.*/nat-extip: \"${EXTERNALIP}\"/g" | kubectl replace -n {{ .Release.Namespace }} -f -
 
       containers:
       - name: {{ .Release.Name }}-geth
@@ -98,7 +98,7 @@ spec:
           - name: EXT_IP
             valueFrom:
               configMapKeyRef:
-                name: geth-config
+                name: {{ include "teku.fullname" . }}-geth-config
                 key: nat-extip
         volumeMounts:
           - name: geth-config
@@ -132,22 +132,22 @@ spec:
         args:
           - |
             exec
-
             geth \
+            --{{ .Values.node.network }} \
             --verbosity {{ .Values.node.elc.geth.verbosity }} \
             --datadir {{ .Values.node.elc.dataPath }} \
             --syncmode {{ .Values.node.elc.syncmode }} \
             --port {{ .Values.node.elc.p2p.port }} \
+            --ipcdisable --nousb \
             --identity {{ .Values.node.elc.identity }} \
-            --networkid {{ .Values.node.network }} \
             --authrpc.addr {{ .Values.node.elc.engine.host | quote }} --authrpc.port {{ .Values.node.elc.engine.port }} --authrpc.vhosts {{ join "," .Values.node.elc.engine.hostAllowlist | quote }} --authrpc.jwtsecret {{  .Values.node.elc.engine.jwtSecretPath | quote }} \
           {{- if .Values.node.elc.metrics.enabled }}
             --metrics --pprof --pprof.addr {{ .Values.node.elc.metrics.host | quote }} --pprof.port {{ .Values.node.elc.metrics.port}} \
           {{- end }}
           {{- if .Values.node.elc.rpc.enabled }}
-            --http --http.addr {{ .Values.node.elc.rpc.addr }} --http.port {{ .Values.node.elc.rpc.port }} --http.corsdomain {{ join "," .Values.node.elc.rpc.corsOrigins | quote }} --http.vhosts {{ join "," .Values.node.elc.rpc.vHosts | quote }} --http.api {{ join "," .Values.node.elc.rpc.api | quote }} \
+            --http --http.addr {{ .Values.node.elc.rpc.host | quote }} --http.port {{ .Values.node.elc.rpc.port }} --http.corsdomain {{ join "," .Values.node.elc.rpc.corsOrigins | quote }} --http.vhosts {{ join "," .Values.node.elc.rpc.vHosts | quote }} --http.api {{ join "," .Values.node.elc.rpc.api | quote }} \
           {{- end }}
-            --nat extip:$POD_IP
+            --nat extip:$EXT_IP
 
         livenessProbe:
           httpGet:
