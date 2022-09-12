@@ -1,15 +1,15 @@
-{{- if eq .Values.node.elc.client "besu" }}
+{{- if eq .Values.node.elc.client "geth" }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "teku.fullname" . }}-besu
+  name: {{ template "teku.fullname" . }}-geth
   labels:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}
     aadpodidbinding: "{{ .Values.azure.identityName }}"
 {{- end }}
-    app.kubernetes.io/name: besu-statefulset
-    app.kubernetes.io/component: besu
+    app.kubernetes.io/name: geth-statefulset
+    app.kubernetes.io/component: geth
     app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
     app.kubernetes.io/namespace: {{ .Release.Namespace }}
     app.kubernetes.io/release: {{ .Release.Name }}
@@ -22,8 +22,8 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: besu-statefulset
-      app.kubernetes.io/component: besu
+      app.kubernetes.io/name: geth-statefulset
+      app.kubernetes.io/component: geth
       app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
       app.kubernetes.io/namespace: {{ .Release.Namespace }}
       app.kubernetes.io/release: {{ .Release.Name }}
@@ -44,8 +44,8 @@ spec:
 {{- if and (eq .Values.cluster.provider "azure") (.Values.cluster.cloudNativeServices) }}        
         aadpodidbinding: "{{ .Values.azure.identityName }}"
 {{- end }}
-        app.kubernetes.io/name: besu-statefulset
-        app.kubernetes.io/component: besu
+        app.kubernetes.io/name: geth-statefulset
+        app.kubernetes.io/component: geth
         app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
         app.kubernetes.io/namespace: {{ .Release.Namespace }}
         app.kubernetes.io/release: {{ .Release.Name }}
@@ -53,7 +53,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.node.elc.metrics.port | quote}}
-        prometheus.io/path: "/metrics"
+        prometheus.io/path: "/debug/metrics/prometheus"
     spec:
 {{- if and (eq .Values.cluster.provider "aws") (.Values.cluster.cloudNativeServices) }}
       serviceAccountName: {{ .Values.aws.serviceAccountName }}
@@ -73,24 +73,12 @@ spec:
               sleep 10;
               EXTERNALIP=$(kubectl get services -n {{ .Release.Namespace }} {{ include "teku.fullname" . }}-discovery --output jsonpath='{.status.loadBalancer.ingress[0].ip}');
               echo $EXTERNALIP;
-              kubectl get cm {{ include "teku.fullname" . }}-besu-config -o yaml -n {{ .Release.Namespace }} | sed "s/p2p-host=.*/p2p-host=\"${EXTERNALIP}\"/g" | kubectl replace -n {{ .Release.Namespace }} -f -
-
-{{- if has .Values.cluster.provider .Values.cluster.storage.volumePermissionsFix }}
-      # fix for minikube and PVC's only writable as root https://github.com/kubernetes/minikube/issues/1990
-      - name: set-volume-permissions
-        image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /data"]
-        volumeMounts:
-          - name: data
-            mountPath: /data
-        securityContext:
-          runAsUser: 0
-{{- end}}
+              kubectl get cm {{ include "teku.fullname" . }}-geth-config -o yaml -n {{ .Release.Namespace }} | sed "s/nat-extip:.*/nat-extip: \"${EXTERNALIP}\"/g" | kubectl replace -n {{ .Release.Namespace }} -f -
 
       containers:
-      - name: {{ .Release.Name }}-besu
-        image: {{ .Values.image.besu.repository }}:{{ .Values.image.besu.tag }}
-        imagePullPolicy: {{ .Values.image.besu.pullPolicy }}
+      - name: {{ .Release.Name }}-geth
+        image: {{ .Values.image.geth.repository }}:{{ .Values.image.geth.tag }}
+        imagePullPolicy: {{ .Values.image.geth.pullPolicy }}
         resources:
           requests:
             cpu: "{{ .Values.node.elc.resources.cpuRequest }}"
@@ -107,13 +95,14 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-{{- if .Values.node.elc.besu.envBesuOpts }}
-          - name: BESU_OPTS
-            value: "{{ .Values.node.besu.envBesuOpts }}"
-{{- end }}
+          - name: EXT_IP
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "teku.fullname" . }}-geth-config
+                key: nat-extip
         volumeMounts:
-          - name: besu-config
-            mountPath: /etc/besu
+          - name: geth-config
+            mountPath: /etc/geth
             readOnly: true
           - name: keys
             mountPath: {{ .Values.node.elc.keysPath }}
@@ -143,9 +132,22 @@ spec:
         args:
           - |
             exec
-            /opt/besu/bin/besu \
-              --config-file=/etc/besu/config.toml \
-              --nat-method=NONE
+            geth \
+            --{{ .Values.node.network }} \
+            --verbosity {{ .Values.node.elc.geth.verbosity }} \
+            --datadir {{ .Values.node.elc.dataPath }} \
+            --syncmode {{ .Values.node.elc.syncmode }} \
+            --port {{ .Values.node.elc.p2p.port }} \
+            --ipcdisable --nousb \
+            --identity {{ .Values.node.elc.identity }} \
+            --authrpc.addr {{ .Values.node.elc.engine.host | quote }} --authrpc.port {{ .Values.node.elc.engine.port }} --authrpc.vhosts {{ join "," .Values.node.elc.engine.hostAllowlist | quote }} --authrpc.jwtsecret {{  .Values.node.elc.engine.jwtSecretPath | quote }} \
+          {{- if .Values.node.elc.metrics.enabled }}
+            --metrics --pprof --pprof.addr {{ .Values.node.elc.metrics.host | quote }} --pprof.port {{ .Values.node.elc.metrics.port}} \
+          {{- end }}
+          {{- if .Values.node.elc.rpc.enabled }}
+            --http --http.addr {{ .Values.node.elc.rpc.host | quote }} --http.port {{ .Values.node.elc.rpc.port }} --http.corsdomain {{ join "," .Values.node.elc.rpc.corsOrigins | quote }} --http.vhosts {{ join "," .Values.node.elc.rpc.vHosts | quote }} --http.api {{ join "," .Values.node.elc.rpc.api | quote }} \
+          {{- end }}
+            --nat extip:$EXT_IP
 
         livenessProbe:
           httpGet:
@@ -157,9 +159,9 @@ spec:
           initialDelaySeconds: 180
           periodSeconds: 60
       volumes:
-      - name: besu-config
+      - name: geth-config
         configMap:
-          name: {{ include "teku.fullname" . }}-besu-config
+          name: {{ include "teku.fullname" . }}-geth-config
       - name: keys
         secret:
           secretName: {{ include "teku.fullname" . }}-keys

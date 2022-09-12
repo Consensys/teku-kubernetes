@@ -149,6 +149,9 @@ spec:
           httpGet:
             path: "/teku/v1/admin/liveness"
             port: {{ .Values.node.teku.restApi.port }}
+            httpHeaders:
+              - name: Content-Type
+                value: application/json
           initialDelaySeconds: 180
           periodSeconds: 60
       volumes:

@@ -38,8 +38,8 @@ node:
     initialState: ""
     env_opts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx8g -XX:SoftMaxHeapSize=3g"
   elc:
-    client: besu
-    syncmode: "X_SNAP" # FAST/FULL/X_SNAP/X_CHECKPOINT 
+    client: geth
+    syncmode: "snap" # snap/full/light
     jwtSharedKey: ""
     resources:
       cpuLimit: 1
@@ -47,5 +47,3 @@ node:
       memLimit: "4G"
       memRequest: "2G"
     dataPath: "/data"
-  besu:
-    envBesuOpts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx4g -XX:SoftMaxHeapSize=2g"

@@ -1,0 +1,18 @@
+{{- if eq .Values.node.elc.client "geth" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "teku.fullname" . }}-geth-config
+  labels:
+    app.kubernetes.io/name: geth-config
+    app.kubernetes.io/component: geth
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/release: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
+  namespace: {{ .Release.Namespace }}
+data:
+  nat-extip: "127.0.0.1"
+
+{{- end }}
