@@ -30,7 +30,7 @@ node:
       memLimit: "8G"
       memRequest: "6G"
     validators:
-      enabled: true
+      enabled: false
       performanceTrackingMode: "ALL"
       validatorKeysPath: "/validator"
       validatorPasswordsPath: "/validator"

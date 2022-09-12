@@ -99,7 +99,7 @@ node:
       host: "5.5.5.5"
       interval: 15
     validators:
-      enabled: true
+      enabled: false
       performanceTrackingMode: "ALL"
       validatorKeysPath: "/validator"
       validatorPasswordsPath: "/validator"
