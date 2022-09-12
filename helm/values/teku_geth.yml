@@ -39,7 +39,7 @@ node:
     env_opts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx8g -XX:SoftMaxHeapSize=3g"
   elc:
     client: geth
-    syncmode: "snap" #geth: snap/full/light
+    syncmode: "snap" # snap/full/light
     jwtSharedKey: ""
     resources:
       cpuLimit: 1
@@ -47,5 +47,3 @@ node:
       memLimit: "4G"
       memRequest: "2G"
     dataPath: "/data"
-  geth:
-    envBesuOpts: ""

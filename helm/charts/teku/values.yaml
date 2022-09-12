@@ -26,7 +26,7 @@ node:
     serviceMonitorEnabled: true
   elc:
     client: besu
-    syncmode: "snap" #besu: FAST/FULL/X_SNAP/X_CHECKPOINT ; #geth: snap/full/light
+    syncmode: "X_SNAP" #besu: FAST/FULL/X_SNAP/X_CHECKPOINT ; #geth: snap/full/light
     identity: "tekuElcNode"
     jwtSharedKey: ""
     resources:
@@ -100,14 +100,31 @@ node:
       enabled: true
       host: "0.0.0.0"
       port: 5051
-      corsOrigins: '["*"]'
-      allowlist: '["*"]'
+      corsOrigins: 
+        - "*"
+      allowlist:
+        - "*"
     metrics:
       enabled: true
       host: "0.0.0.0"
       port: 8008
-      allowlist: '["*"]'
-      categories: "['BEACON', 'JVM', 'PROCESS', 'DISCOVERY', 'EVENTBUS', 'EXECUTOR', 'LIBP2P', 'NETWORK', 'STORAGE', 'STORAGE_HOT_DB', 'STORAGE_FINALIZED_DB', 'REMOTE_VALIDATOR', 'VALIDATOR', 'VALIDATOR_PERFORMANCE']"
+      allowlist: 
+        - "*"
+      categories: 
+       - BEACON
+       - JVM
+       - PROCESS
+       - DISCOVERY
+       - EVENTBUS
+       - EXECUTOR
+       - LIBP2P
+       - NETWORK
+       - STORAGE
+       - STORAGE_HOT_DB
+       - STORAGE_FINALIZED_DB
+       - REMOTE_VALIDATOR
+       - VALIDATOR
+       - VALIDATOR_PERFORMANCE
     metricsPush:
       enabled: false
       host: "5.5.5.5"
