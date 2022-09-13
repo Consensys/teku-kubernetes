@@ -23,6 +23,8 @@ node:
   removeKeysOnDelete: true
   metrics:
     serviceMonitorEnabled: true
+    clcMetricsPath: "/metrics"
+    elcMetricsPath: "/debug/metrics/prometheus"
   teku:
     resources:
       cpuLimit: 1

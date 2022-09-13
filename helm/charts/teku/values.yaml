@@ -24,6 +24,8 @@ node:
   removeKeysOnDelete: true
   metrics:
     serviceMonitorEnabled: true
+    clcMetricsPath: "/metrics"
+    elcMetricsPath: "/metrics"
   elc:
     client: besu
     syncmode: "X_SNAP" #besu: FAST/FULL/X_SNAP/X_CHECKPOINT ; #geth: snap/full/light
@@ -77,6 +79,7 @@ node:
       envBesuOpts: ""
     geth:
       verbosity: 3
+
   teku:
     network: mainnet
     resources:

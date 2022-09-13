@@ -93,11 +93,14 @@ or on the command line `kubectl -n quorum get services quorum-monitoring-ingress
 
 You can then access Grafana on: 
 ```bash
+# For Teku's grafana address:
+http://<INGRESS_IP>/d/DzqnL9oGk/teku-overview?orgId=1&refresh=10s
+
 # For Besu's grafana address:
 http://<INGRESS_IP>/d/XE4V0WGZz/besu-overview?orgId=1&refresh=10s
 
-# For Teku's grafana address:
-http://<INGRESS_IP>/d/DzqnL9oGk/teku-overview?orgId=1&refresh=10s
+# For Geths's grafana address:
+http://<INGRESS_IP>/d/3UR2LdFGAEUzuJ2KJCzs/geth-overview?orgId=1&refresh=10s
 ```
 
 You can access Kibana on:

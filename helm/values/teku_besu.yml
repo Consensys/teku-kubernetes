@@ -23,6 +23,8 @@ node:
   removeKeysOnDelete: true
   metrics:
     serviceMonitorEnabled: true
+    clcMetricsPath: "/metrics"
+    elcMetricsPath: "/metrics"
   teku:
     resources:
       cpuLimit: 1

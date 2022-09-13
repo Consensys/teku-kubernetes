@@ -53,7 +53,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.node.elc.metrics.port | quote}}
-        prometheus.io/path: "/metrics"
+        prometheus.io/path: {{ .Values.node.metrics.elcMetricsPath | quote }}
     spec:
 {{- if and (eq .Values.cluster.provider "aws") (.Values.cluster.cloudNativeServices) }}
       serviceAccountName: {{ .Values.aws.serviceAccountName }}

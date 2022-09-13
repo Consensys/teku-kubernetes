@@ -80,12 +80,12 @@ spec:
   endpoints:
   - port: clc-metrics
     interval: 15s
-    path: /metrics
+    path: {{ .Values.node.metrics.clcMetricsPath | quote }}
     scheme: http
     honorLabels: true
   - port: elc-metrics
     interval: 15s
-    path: /metrics
+    path: {{ .Values.node.metrics.elcMetricsPath | quote }}
     scheme: http
     honorLabels: true
 {{- end }}
