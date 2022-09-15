@@ -110,8 +110,14 @@ http://<INGRESS_IP>/kibana
 
 ```bash
 helm dependency update ./charts/teku
-helm install reader ./charts/teku --namespace teku --create-namespace --values ./values/teku_besu.yml
+helm template reader ./charts/teku --namespace teku --create-namespace --values ./values/teku_besu.yml
 ```
 
 ### _Validator Keys_
 If you are deploying with validator keys, please put the relevant encrypted json keys and passwords as txt files in the [validator](../helm/charts/teku/validator/) folder and set the `.Values.node.teku.validators.enabled` value
+
+### Questions
+- keys path vs validators keys path (this is mounted read only)
+- startup command
+- is the normal process bulkload & then start or is this wrapped up in the one subcommand?
+- eth2. config docs?

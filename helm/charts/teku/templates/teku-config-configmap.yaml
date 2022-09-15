@@ -25,14 +25,14 @@ data:
     {{ end }}
     {{ if .Values.node.teku.validators.enabled -}}
     {{ if .Values.node.web3signer.enabled -}}
-    validators-external-signer-url: "http://{{ include "teku.fullname" . }}-internal.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.node.teku.web3signer.http.port }}"
-    teku_validators_external_signer_public_keys: "http://{{ include "teku.fullname" . }}-internal.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.node.teku.web3signer.http.port }}/api/v1/eth2/publicKeys"
-    {{ else }}
+    validators-external-signer-url: "http://{{ include "teku.fullname" . }}-internal.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.node.web3signer.http.port }}"
+    validators-external-signer-public-keys: "http://{{ include "teku.fullname" . }}-internal.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.node.web3signer.http.port }}/api/v1/eth2/publicKeys"
+    {{ else -}}
     validator-keys: "{{ .Values.node.teku.validators.validatorKeysPath }}:{{ .Values.node.teku.validators.validatorPasswordsPath }}"
     # when pulling from k8s secrets or keyvault etc, it is read only so the lock will not work, additionally the pod only has permissions to read and not update/create the secrets so its safe
     validators-keystore-locking-enabled: "false"
-    {{ end }}
-    {{ end }}
+    {{ end -}}
+    {{ end -}}
 
     {{ if .Values.node.teku.validators.validatorDefaultFeeRecipient -}}
     validators-proposer-default-fee-recipient: {{ .Values.node.teku.validators.validatorDefaultFeeRecipient | quote }}

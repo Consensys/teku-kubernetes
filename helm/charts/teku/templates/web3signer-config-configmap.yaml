@@ -16,7 +16,7 @@ metadata:
 data:
   config.yml: |-
     data-path: {{ .Values.node.web3signer.dataPath | quote }}
-    key-store-path: {{ .Values.node.web3signer.dataPath | quote }}
+    key-store-path: {{ .Values.node.web3signer.keysPath | quote }}
     logging: {{ .Values.node.web3signer.logging | quote }}
     idle-connection-timeout-seconds: 30
     swagger-ui-enabled: {{ .Values.node.web3signer.swaggerUIEnabled }}
@@ -33,5 +33,16 @@ data:
     metrics-port:{{ .Values.node.web3signer.metrics.port }}
     metrics-categories:  {{ .Values.node.web3signer.metrics.categories | toJson }}
     metrics-host-allowlist: {{ .Values.node.web3signer.metrics.allowlist | toJson }}
+
+    # eth2
+    eth2.slashing-protection-enabled: True
+    eth2.slashing-protection-db-url: {{ .Values.postgresql.jdbcConnectionUrl | quote}}
+    eth2.slashing-protection-db-username: {{ .Values.postgresql.postgresqlUsername }}
+    eth2.slashing-protection-db-password: {{ .Values.postgresql.postgresqlPassword | quote}}
+    eth2.slashing-protection-pruning-enabled: True
+    eth2.slashing-protection-pruning-epochs-to-keep: 1000
+    eth2.network: {{ .Values.node.network | quote }}
+    eth2.keystores-path: {{ .Values.node.web3signer.validatorKeysPath | quote }}
+    eth2.keystores-passwords-path: {{ .Values.node.web3signer.validatorPasswordsPath | quote }}
 
 {{- end }}

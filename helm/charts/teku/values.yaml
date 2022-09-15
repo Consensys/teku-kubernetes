@@ -25,9 +25,10 @@ postgresql:
   postgresqlPassword: postgres
   initdbUser: postgres
   initdbPassword: postgres
+  jdbcConnectionUrl: "jdbc:postgresql://postgresql/postgres"
 
 node:
-  network: mainnet
+  network: goerli
   removeKeysOnDelete: true
   metrics:
     serviceMonitorEnabled: true
@@ -89,17 +90,16 @@ node:
       verbosity: 3
 
   web3signer:
-    enabled: true
+    enabled: false
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
       memLimit: "2G"
       memRequest: "1G"    
-    databaseUurl: "ecto://postgres:postgres@blockscout-postgresql/postgres?ssl=false"
-    postgresPassword: postgres
-    postgresUser: postgres
     dataPath: "/data"
     keysPath: "/keys"
+    validatorKeysPath: "/validator"
+    validatorPasswordsPath: "/validator"
     env_opts: ""
     swaggerUIEnabled: true
     http:

@@ -32,10 +32,8 @@ node:
       memLimit: "8G"
       memRequest: "6G"
     validators:
-      enabled: false
+      enabled: true
       performanceTrackingMode: "ALL"
-      validatorKeysPath: "/validator"
-      validatorPasswordsPath: "/validator"
       validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
     initialState: ""
     env_opts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx8g -XX:SoftMaxHeapSize=3g"
@@ -51,3 +49,5 @@ node:
     dataPath: "/data"
   besu:
     envBesuOpts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx4g -XX:SoftMaxHeapSize=2g"
+  web3signer:
+    envOpts: ""

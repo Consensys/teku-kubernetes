@@ -119,19 +119,19 @@ spec:
         args:
           - |
             exec
-            sleep 1000;
-            # /opt/web3signer/bin/web3signer \
-            #   -c /etc/web3signer/config.yml
+            /opt/web3signer/bin/web3signer \
+              -c /etc/web3signer/config.yml \
+              eth2
 
-        # livenessProbe:
-        #   httpGet:
-        #     path: "/liveness"
-        #     port: {{ .Values.node.web3signer.http.port }}
-        #     httpHeaders:
-        #       - name: Content-Type
-        #         value: application/json
-        #   initialDelaySeconds: 180
-        #   periodSeconds: 60
+        livenessProbe:
+          httpGet:
+            path: "/upcheck"
+            port: {{ .Values.node.web3signer.http.port }}
+            httpHeaders:
+              - name: Content-Type
+                value: application/json
+          initialDelaySeconds: 180
+          periodSeconds: 60
       volumes:
       - name: web3signer-config
         configMap:
