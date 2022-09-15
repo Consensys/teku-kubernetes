@@ -119,8 +119,9 @@ spec:
         args:
           - |
             exec
-            /opt/web3signer/bin/web3signer \
-              -c /etc/web3signer/config.yml
+            sleep 1000;
+            # /opt/web3signer/bin/web3signer \
+            #   -c /etc/web3signer/config.yml
 
         # livenessProbe:
         #   httpGet:
