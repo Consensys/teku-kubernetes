@@ -19,6 +19,13 @@ cluster:
     tenantId: azure-tenantId # the tenant ID of the key vault
     subscriptionId: azure-subscriptionId # the subscription ID to use - this needs to be set explictly when using multi tenancy
 
+postgresql:
+  postgresqlDatabase: postgres
+  postgresqlUsername: postgres
+  postgresqlPassword: postgres
+  initdbUser: postgres
+  initdbPassword: postgres
+
 node:
   network: mainnet
   removeKeysOnDelete: true
@@ -26,6 +33,7 @@ node:
     serviceMonitorEnabled: true
     clcMetricsPath: "/metrics"
     elcMetricsPath: "/metrics"
+    web3signerMetricsPath: "/metrics"
   elc:
     client: besu
     syncmode: "X_SNAP" #besu: FAST/FULL/X_SNAP/X_CHECKPOINT ; #geth: snap/full/light
@@ -34,7 +42,7 @@ node:
     resources:
       cpuLimit: 1
       cpuRequest: 0.5
-      memLimit: "4G"
+      memLimit: "8G"
       memRequest: "1G"
     dataPath: "/data"
     keysPath: "/keys"
@@ -80,6 +88,41 @@ node:
     geth:
       verbosity: 3
 
+  web3signer:
+    enabled: true
+    resources:
+      cpuLimit: 1
+      cpuRequest: 0.5
+      memLimit: "2G"
+      memRequest: "1G"    
+    databaseUurl: "ecto://postgres:postgres@blockscout-postgresql/postgres?ssl=false"
+    postgresPassword: postgres
+    postgresUser: postgres
+    dataPath: "/data"
+    keysPath: "/keys"
+    env_opts: ""
+    swaggerUIEnabled: true
+    http:
+      host: "0.0.0.0"
+      port: 10000
+      allowlist:
+        - "*"   
+    metrics:
+      enabled: true
+      host: "0.0.0.0"
+      port: 10001
+      allowlist: 
+        - "*"
+      corsOrigins: 
+        - "*"        
+      categories: 
+       - HTTP
+       - SIGNING
+       - FILECOIN
+       - ETH2_SLASHING_PROTECTION
+       - JVM
+       - PROCESS
+       
   teku:
     network: mainnet
     resources:
@@ -139,10 +182,15 @@ node:
       validatorPasswordsPath: "/validator"
       validatorDefaultFeeRecipient: "0x000095E79eAC4d76aab57cB2c1f091d553b36ca0"
 
+
 image:
   teku:
     repository: consensys/teku
     tag: 22.9.0
+    pullPolicy: IfNotPresent
+  web3signer:
+    repository: web3signer
+    tag: 22.8.1
     pullPolicy: IfNotPresent
   besu:
     repository: hyperledger/besu

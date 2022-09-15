@@ -119,9 +119,11 @@ spec:
           - name: data
             mountPath: {{ .Values.node.teku.dataPath }}
 {{- if .Values.node.teku.validators.enabled }}
+{{ if not .Values.node.web3signer.enabled }}
           - name: validator-keys
             mountPath: {{ .Values.node.teku.validators.validatorKeysPath }}
             readOnly: true
+{{- end }}
 {{- end }}
         ports:
           - name: clc-rest
@@ -162,7 +164,9 @@ spec:
         secret:
           secretName: {{ include "teku.fullname" . }}-keys
 {{- if .Values.node.teku.validators.enabled }}          
+{{ if not .Values.node.web3signer.enabled }}
       - name: validator-keys
         secret:
           secretName: {{ include "teku.fullname" . }}-teku-validator-keys
-{{- end }}          
+{{- end }}
+{{- end }}

@@ -109,6 +109,7 @@ http://<INGRESS_IP>/kibana
 ```
 
 ```bash
+helm dependency update ./charts/teku
 helm install reader ./charts/teku --namespace teku --create-namespace --values ./values/teku_besu.yml
 ```
 

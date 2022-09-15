@@ -54,6 +54,16 @@ spec:
       port: {{ .Values.node.teku.metrics.port }}
       targetPort: clc-metrics
       protocol: TCP
+{{- if .Values.node.web3signer.enabled }}
+    - name: w3s-http
+      port: {{ .Values.node.web3signer.http.port }}
+      targetPort: w3s-http
+      protocol: TCP
+    - name: w3s-metrics
+      port: {{ .Values.node.web3signer.metrics.port }}
+      targetPort: w3s-metrics
+      protocol: TCP
+{{- end }}      
 
 {{- if .Values.node.metrics.serviceMonitorEnabled }}
 ---
@@ -88,4 +98,12 @@ spec:
     path: {{ .Values.node.metrics.elcMetricsPath | quote }}
     scheme: http
     honorLabels: true
+{{- if .Values.node.web3signer.enabled }}
+  - port: w3s-metrics
+    interval: 15s
+    path: {{ .Values.node.metrics.web3signerMetricsPath | quote }}
+    scheme: http
+    honorLabels: true    
+{{- end }}
+
 {{- end }}

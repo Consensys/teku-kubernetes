@@ -1,0 +1,37 @@
+
+{{- if .Values.node.web3signer.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "teku.fullname" . }}-web3signer-config
+  labels:
+    app.kubernetes.io/name: web3signer-config
+    app.kubernetes.io/component: teku
+    app.kubernetes.io/part-of: {{ include "teku.fullname" . }}
+    app.kubernetes.io/namespace: {{ .Release.Namespace }}
+    app.kubernetes.io/release: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: helm
+  namespace: {{ .Release.Namespace }}
+data:
+  config.yml: |-
+    data-path: {{ .Values.node.web3signer.dataPath | quote }}
+    key-store-path: {{ .Values.node.web3signer.dataPath | quote }}
+    logging: {{ .Values.node.web3signer.logging | quote }}
+    idle-connection-timeout-seconds: 30
+    swagger-ui-enabled: {{ .Values.node.web3signer.swaggerUIEnabled }}
+
+    # htttp
+    http-listen-host: {{ .Values.node.web3signer.http.host | quote }}
+    http-listen-port: {{ .Values.node.web3signer.http.port }}
+    http-host-allowlist: {{ .Values.node.web3signer.http.allowlist | toJson }}
+    http-cors-origins: {{ .Values.node.web3signer.http.corsOrigins | toJson }}
+
+    # metrics
+    metrics-enabled: {{ .Values.node.web3signer.metrics.enabled }}
+    metrics-host: {{ .Values.node.web3signer.metrics.host | quote }}
+    metrics-port:{{ .Values.node.web3signer.metrics.port }}
+    metrics-categories:  {{ .Values.node.web3signer.metrics.categories | toJson }}
+    metrics-host-allowlist: {{ .Values.node.web3signer.metrics.allowlist | toJson }}
+
+{{- end }}
