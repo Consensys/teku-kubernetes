@@ -37,12 +37,12 @@ data:
     # eth2
     eth2.slashing-protection-enabled: True
 {{ if eq .Values.postgresql.jdbcConnectionUrl "" }}
-    eth2.slashing-protection-db-url: "jdbc:postgresql//{{ .Release.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local:5432/{{ .Values.postgresql.postgresqlDatabase }}"
+    eth2.slashing-protection-db-url: "jdbc:postgresql://{{ .Release.Name }}-postgresql.{{ .Release.Namespace }}.svc.cluster.local:5432/{{ .Values.postgresql.postgresqlDatabase }}"
 {{ else }}
     eth2.slashing-protection-db-url: {{ .Values.postgresql.jdbcConnectionUrl | quote}}
 {{ end }}
     eth2.slashing-protection-db-username: {{ .Values.postgresql.postgresqlUsername }}
-    eth2.slashing-protection-db-password: {{ .Values.postgresql.postgresqlPassword | quote}}
+    # eth2.slashing-protection-db-password: {{ .Values.postgresql.postgresqlPassword | quote}}
     eth2.slashing-protection-pruning-enabled: True
     eth2.slashing-protection-pruning-epochs-to-keep: 1000
     eth2.network: {{ .Values.node.network | quote }}

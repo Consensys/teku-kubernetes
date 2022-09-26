@@ -22,7 +22,7 @@ cluster:
 node:
   removeKeysOnDelete: true
   metrics:
-    serviceMonitorEnabled: true
+    serviceMonitorEnabled: false
     clcMetricsPath: "/metrics"
     elcMetricsPath: "/metrics"
   teku:
@@ -39,7 +39,7 @@ node:
     env_opts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx8g -XX:SoftMaxHeapSize=3g"
   elc:
     client: besu
-    syncmode: "X_SNAP" # FAST/FULL/X_SNAP/X_CHECKPOINT 
+    syncmode: "X_SNAP" # FAST/FULL/X_SNAP/X_CHECKPOINT
     jwtSharedKey: ""
     resources:
       cpuLimit: 1
