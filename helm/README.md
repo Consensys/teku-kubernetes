@@ -110,7 +110,7 @@ http://<INGRESS_IP>/kibana
 
 ```bash
 helm dependency update ./charts/teku
-helm template reader ./charts/teku --namespace teku --create-namespace --values ./values/teku_besu.yml
+helm install r1 ./charts/teku --namespace teku --create-namespace --values ./values/teku_besu.yml
 ```
 
 ### _Validator Keys_

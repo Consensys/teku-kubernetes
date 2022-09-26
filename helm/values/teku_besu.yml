@@ -50,4 +50,4 @@ node:
   besu:
     envBesuOpts: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data -Xmx4g -XX:SoftMaxHeapSize=2g"
   web3signer:
-    envOpts: ""
+    enabled: true

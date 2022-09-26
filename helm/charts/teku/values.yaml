@@ -25,7 +25,8 @@ postgresql:
   postgresqlPassword: postgres
   initdbUser: postgres
   initdbPassword: postgres
-  jdbcConnectionUrl: "jdbc:postgresql://postgresql/postgres"
+  jdbcConnectionUrl: ""     # jdbc:postgresql://[user[:password]@][netloc][:port][/dbname][?param1=value1&...]
+
 
 node:
   network: goerli
@@ -98,23 +99,24 @@ node:
       memRequest: "1G"    
     dataPath: "/data"
     keysPath: "/keys"
+    logging: INFO
     validatorKeysPath: "/validator"
     validatorPasswordsPath: "/validator"
     env_opts: ""
-    swaggerUIEnabled: true
+    swaggerUIEnabled: false
     http:
       host: "0.0.0.0"
       port: 10000
       allowlist:
-        - "*"   
+        - "*"
+      corsOrigins: 
+        - "*"        
     metrics:
       enabled: true
       host: "0.0.0.0"
       port: 10001
       allowlist: 
         - "*"
-      corsOrigins: 
-        - "*"        
       categories: 
        - HTTP
        - SIGNING
@@ -189,7 +191,7 @@ image:
     tag: 22.9.0
     pullPolicy: IfNotPresent
   web3signer:
-    repository: web3signer
+    repository: consensys/web3signer
     tag: 22.8.1
     pullPolicy: IfNotPresent
   besu:

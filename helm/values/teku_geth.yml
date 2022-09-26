@@ -48,4 +48,5 @@ node:
       memRequest: "2G"
     dataPath: "/data"
   web3signer:
-    envOpts: ""
+    enabled: true
+

@@ -144,18 +144,19 @@ spec:
         args:
           - |
             exec
-            /opt/teku/bin/teku \
-              -c /etc/teku/config.yml
+            sleep 10000
+            # /opt/teku/bin/teku \
+            #   -c /etc/teku/config.yml
 
-        livenessProbe:
-          httpGet:
-            path: "/teku/v1/admin/liveness"
-            port: {{ .Values.node.teku.restApi.port }}
-            httpHeaders:
-              - name: Content-Type
-                value: application/json
-          initialDelaySeconds: 180
-          periodSeconds: 60
+        # livenessProbe:
+        #   httpGet:
+        #     path: "/teku/v1/admin/liveness"
+        #     port: {{ .Values.node.teku.restApi.port }}
+        #     httpHeaders:
+        #       - name: Content-Type
+        #         value: application/json
+        #   initialDelaySeconds: 180
+        #   periodSeconds: 60
       volumes:
       - name: teku-config
         configMap:
